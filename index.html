@@ -37,7 +37,7 @@
       position:sticky;
       top:0;
       z-index:50;
-      background:rgba(30,20,20,.72);
+      background:rgba(30,20,20,.48);
       backdrop-filter:blur(16px);
       -webkit-backdrop-filter:blur(16px);
       border-bottom:1px solid var(--color-line);
@@ -60,7 +60,11 @@
     .offer-nav__brand{ display:inline-flex; align-items:center; flex:0 0 auto; text-decoration:none; }
     .offer-nav__logo{ height:26px; width:auto; display:block; }
     .offer-nav__wordmark-group{ display:flex; flex-direction:column; line-height:1.05; }
-    .offer-nav__wordmark{ font-family:var(--font-display); font-size:18px; font-weight:800; letter-spacing:.01em; text-transform:uppercase; }
+    .offer-nav__wordmark{
+      font-family:var(--font-display); font-size:18px; font-weight:800; letter-spacing:.01em; text-transform:uppercase;
+      text-decoration:underline dotted; text-decoration-thickness:1.5px; text-underline-offset:4px;
+      text-decoration-color:color-mix(in srgb, var(--color-fg) 40%, transparent);
+    }
     .offer-nav__wordmark em{
       font-style:normal;
       background:linear-gradient(180deg, #ffffff 0%, var(--color-silver) 55%, #7f8ca0 100%);
@@ -273,6 +277,10 @@
 
     /* ---- Kopfzeile: Wort-Hover mit Nutzen-Reveal ---- */
     .edhero__word{ position:relative; display:inline-block; white-space:nowrap; cursor:default; }
+    span.edhero__word{
+      text-decoration:underline dotted; text-decoration-thickness:2px; text-underline-offset:9px;
+      text-decoration-color:color-mix(in srgb, var(--color-fg) 38%, transparent);
+    }
     .edhero__word-reveal{
       position:absolute; z-index:5; width:max-content; white-space:nowrap;
       font-family:var(--font-display); font-weight:700; font-style:italic;
@@ -374,6 +382,11 @@
       transition:transform .25s ease;
     }
     .edhero__card:hover{ transform:translateY(-4px) scale(1.04); }
+    .edhero__card-arrow{
+      margin-left:auto; padding-left:8px; font-size:16px; line-height:1; flex-shrink:0;
+      color:var(--color-fg-3); opacity:.65; transition:transform .2s ease, opacity .2s ease;
+    }
+    .edhero__card:hover .edhero__card-arrow{ transform:translateX(3px); opacity:1; }
     .edhero__card--tl{ top:10px; left:-20px; animation:edhero-float-up 6s ease-in-out 1.4s infinite alternate; }
     .edhero__card--br{ bottom:14px; right:-14px; animation:edhero-float-down 6s ease-in-out 1.4s infinite alternate; }
     .edhero__card i{
@@ -436,6 +449,7 @@
       <a class="edhero__card edhero__card--tl" href="#bereiche" style="text-decoration:none;cursor:pointer;">
         <i><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></i>
         <div><b>4 Bereiche</b><small>Focus, Sleep, Relax, Balance</small></div>
+        <span class="edhero__card-arrow" aria-hidden="true">&#8594;</span>
       </a>
       <div class="edhero__card edhero__card--br">
         <i><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></i>
@@ -490,6 +504,28 @@
           raf = null;
         });
       });
+    }
+
+    /* ---- Einmalige Intro-Demo: zeigt neuen Besuchern, dass die Wörter interaktiv sind ---- */
+    var INTRO_KEY = 'ss_hero_intro_v1';
+    var introSeen = true;
+    try { introSeen = !!localStorage.getItem(INTRO_KEY); } catch(e){}
+    if (!reduced && !introSeen && words.length){
+      setTimeout(function(){
+        var i = 0;
+        function flashNext(){
+          if (i > 0) words[i-1].classList.remove('is-open');
+          if (i >= words.length){
+            try { localStorage.setItem(INTRO_KEY, '1'); } catch(e){}
+            return;
+          }
+          words[i].classList.add('is-open');
+          clampReveal(words[i]);
+          i++;
+          setTimeout(flashNext, 650);
+        }
+        flashNext();
+      }, 1000);
     }
   })();
   </script>
@@ -2931,7 +2967,9 @@
       display:block;
     }
     .offer-footer__wordmark--text{
-      display:block; text-decoration:none;
+      display:block;
+      text-decoration:underline dotted; text-decoration-thickness:3px; text-underline-offset:14px;
+      text-decoration-color:color-mix(in srgb, var(--color-fg) 30%, transparent);
       font-family:var(--font-display); font-weight:800; letter-spacing:-.03em; text-transform:uppercase;
       font-size:clamp(52px, 11vw, 168px); line-height:1; text-align:center;
       color:var(--color-fg); opacity:.9; overflow-wrap:anywhere;
