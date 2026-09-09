@@ -65,8 +65,10 @@
       padding:3px 7px; margin:-3px -7px;
       transition:background .1s ease;
     }
-    .offer-nav__brand:hover .offer-nav__wordmark-group{
-      background:radial-gradient(circle 60px at var(--wx,50%) var(--wy,50%), color-mix(in srgb, var(--color-brand) 28%, transparent) 0%, transparent 72%);
+    @media (hover:hover) and (pointer:fine){
+      .offer-nav__brand:hover .offer-nav__wordmark-group{
+        background:radial-gradient(circle 60px at var(--wx,50%) var(--wy,50%), color-mix(in srgb, var(--color-brand) 28%, transparent) 0%, transparent 72%);
+      }
     }
     .offer-nav__wordmark{ font-family:var(--font-display); font-size:18px; font-weight:800; letter-spacing:.01em; text-transform:uppercase; }
     .offer-nav__wordmark em{
@@ -266,7 +268,7 @@
     .edhero__title{
       position:relative;
       font-family:var(--font-display); font-weight:800;
-      font-size:clamp(42px,6.6vw,76px); line-height:1.06; letter-spacing:-.03em;
+      font-size:clamp(42px,6.6vw,76px); line-height:1.15; letter-spacing:-.03em;
       -webkit-text-stroke:.6px currentColor;
       margin:60px 0 92px; color:var(--color-fg); cursor:default;
       animation:edhero-up .7s .08s cubic-bezier(.2,.7,.2,1) both;
@@ -286,9 +288,22 @@
       padding:2px 5px; margin:-2px -5px;
       transition:background .1s ease;
     }
-    span.edhero__word:hover{
-      background:radial-gradient(circle 55px at var(--wx,50%) var(--wy,50%), color-mix(in srgb, var(--color-brand) 28%, transparent) 0%, transparent 72%);
+    @media (hover:hover) and (pointer:fine){
+      span.edhero__word:hover{
+        background:radial-gradient(circle 55px at var(--wx,50%) var(--wy,50%), color-mix(in srgb, var(--color-brand) 28%, transparent) 0%, transparent 72%);
+      }
     }
+
+    /* ---- Dauerhafter, sanfter Hinweis-Puls, bis jemand zum ersten Mal interagiert hat ---- */
+    @keyframes edhero-word-pulse{
+      0%, 100%{ background:radial-gradient(circle 55px at 50% 50%, color-mix(in srgb, var(--color-brand) 0%, transparent) 0%, transparent 72%); }
+      50%{ background:radial-gradient(circle 55px at 50% 50%, color-mix(in srgb, var(--color-brand) 20%, transparent) 0%, transparent 72%); }
+    }
+    .edhero.is-unengaged .edhero__word[data-pos="tl"]{ animation:edhero-word-pulse 2.6s ease-in-out 0s infinite; }
+    .edhero.is-unengaged .edhero__word[data-pos="tr"]{ animation:edhero-word-pulse 2.6s ease-in-out .5s infinite; }
+    .edhero.is-unengaged .edhero__word[data-pos="bl"]{ animation:edhero-word-pulse 2.6s ease-in-out 1s infinite; }
+    .edhero.is-unengaged .edhero__word[data-pos="r"]{ animation:edhero-word-pulse 2.6s ease-in-out 1.5s infinite; }
+
     .edhero__word-reveal{
       position:absolute; z-index:5; width:max-content; white-space:nowrap;
       font-family:var(--font-display); font-weight:700; font-style:italic;
@@ -299,28 +314,28 @@
     .edhero__word:hover .edhero__word-reveal,
     .edhero__word.is-open .edhero__word-reveal{ opacity:1; }
 
-    .edhero__word-reveal--tl{ left:0; right:auto; bottom:100%; margin-bottom:8px; text-align:left; transform:translate(0,4px); }
-    .edhero__word:hover .edhero__word-reveal--tl, .edhero__word.is-open .edhero__word-reveal--tl{ transform:translate(0,0); }
+    .edhero__word-reveal--tl{ left:0; right:auto; bottom:100%; margin-bottom:8px; text-align:left; transform:translate(0, calc(4px + var(--clampy,0px))); }
+    .edhero__word:hover .edhero__word-reveal--tl, .edhero__word.is-open .edhero__word-reveal--tl{ transform:translate(0, var(--clampy,0px)); }
 
-    .edhero__word-reveal--tr{ left:0; bottom:100%; margin-bottom:8px; text-align:left; transform:translate(8px,4px); }
-    .edhero__word:hover .edhero__word-reveal--tr, .edhero__word.is-open .edhero__word-reveal--tr{ transform:translate(22px,0); }
+    .edhero__word-reveal--tr{ left:0; bottom:100%; margin-bottom:8px; text-align:left; transform:translate(8px, calc(4px + var(--clampy,0px))); }
+    .edhero__word:hover .edhero__word-reveal--tr, .edhero__word.is-open .edhero__word-reveal--tr{ transform:translate(22px, var(--clampy,0px)); }
 
-    .edhero__word-reveal--bl{ left:0; right:auto; top:100%; margin-top:8px; text-align:left; transform:translate(0,-4px); }
-    .edhero__word:hover .edhero__word-reveal--bl, .edhero__word.is-open .edhero__word-reveal--bl{ transform:translate(0,0); }
+    .edhero__word-reveal--bl{ left:0; right:auto; top:100%; margin-top:8px; text-align:left; transform:translate(0, calc(-4px + var(--clampy,0px))); }
+    .edhero__word:hover .edhero__word-reveal--bl, .edhero__word.is-open .edhero__word-reveal--bl{ transform:translate(0, var(--clampy,0px)); }
 
-    .edhero__word-reveal--r{ right:0; top:100%; margin-top:24px; text-align:right; transform:translate(8px,-4px); }
-    .edhero__word:hover .edhero__word-reveal--r, .edhero__word.is-open .edhero__word-reveal--r{ transform:translate(20px,0); }
+    .edhero__word-reveal--r{ right:0; top:100%; margin-top:24px; text-align:right; transform:translate(8px, calc(-4px + var(--clampy,0px))); }
+    .edhero__word:hover .edhero__word-reveal--r, .edhero__word.is-open .edhero__word-reveal--r{ transform:translate(20px, var(--clampy,0px)); }
 
     @media (max-width:640px){
       .edhero__word-reveal{ font-size:21px; }
-      .edhero__word-reveal--tl{ left:0; right:auto; bottom:100%; margin-bottom:8px; text-align:left; transform:translate(0,4px); }
-      .edhero__word:hover .edhero__word-reveal--tl, .edhero__word.is-open .edhero__word-reveal--tl{ transform:translate(0,0); }
-      .edhero__word-reveal--tr{ left:50%; right:auto; bottom:100%; margin-bottom:8px; text-align:center; transform:translate(calc(-50% + var(--clampx,0px)),4px); }
-      .edhero__word:hover .edhero__word-reveal--tr, .edhero__word.is-open .edhero__word-reveal--tr{ transform:translate(calc(-50% + var(--clampx,0px)),0); }
-      .edhero__word-reveal--bl{ left:0; right:auto; top:100%; margin-top:8px; text-align:left; transform:translate(0,-4px); }
-      .edhero__word:hover .edhero__word-reveal--bl, .edhero__word.is-open .edhero__word-reveal--bl{ transform:translate(0,0); }
-      .edhero__word-reveal--r{ left:50%; top:100%; margin-left:0; margin-top:24px; text-align:center; transform:translate(calc(-50% + var(--clampx,0px)),-4px); }
-      .edhero__word:hover .edhero__word-reveal--r, .edhero__word.is-open .edhero__word-reveal--r{ transform:translate(calc(-50% + var(--clampx,0px)),0); }
+      .edhero__word-reveal--tl{ left:0; right:auto; bottom:100%; margin-bottom:8px; text-align:left; transform:translate(0, calc(4px + var(--clampy,0px))); }
+      .edhero__word:hover .edhero__word-reveal--tl, .edhero__word.is-open .edhero__word-reveal--tl{ transform:translate(0, var(--clampy,0px)); }
+      .edhero__word-reveal--tr{ left:50%; right:auto; bottom:100%; margin-bottom:8px; text-align:center; transform:translate(calc(-50% + var(--clampx,0px)), calc(4px + var(--clampy,0px))); }
+      .edhero__word:hover .edhero__word-reveal--tr, .edhero__word.is-open .edhero__word-reveal--tr{ transform:translate(calc(-50% + var(--clampx,0px)), var(--clampy,0px)); }
+      .edhero__word-reveal--bl{ left:0; right:auto; top:100%; margin-top:8px; text-align:left; transform:translate(0, calc(-4px + var(--clampy,0px))); }
+      .edhero__word:hover .edhero__word-reveal--bl, .edhero__word.is-open .edhero__word-reveal--bl{ transform:translate(0, var(--clampy,0px)); }
+      .edhero__word-reveal--r{ left:50%; top:100%; margin-left:0; margin-top:24px; text-align:center; transform:translate(calc(-50% + var(--clampx,0px)), calc(-4px + var(--clampy,0px))); }
+      .edhero__word:hover .edhero__word-reveal--r, .edhero__word.is-open .edhero__word-reveal--r{ transform:translate(calc(-50% + var(--clampx,0px)), var(--clampy,0px)); }
     }
 
     /* ---- Mouse-follow glow, confined to hero ---- */
@@ -395,6 +410,8 @@
       color:var(--color-fg-3); opacity:.65; transition:transform .2s ease, opacity .2s ease;
     }
     .edhero__card:hover .edhero__card-arrow{ transform:translateX(3px); opacity:1; }
+    @keyframes edhero-arrow-nudge{ 0%,100%{ transform:translateX(0); opacity:.6; } 50%{ transform:translateX(5px); opacity:1; } }
+    .edhero.is-unengaged .edhero__card-arrow{ animation:edhero-arrow-nudge 1.8s ease-in-out infinite; }
     .edhero__card--tl{ top:10px; left:-20px; animation:edhero-float-up 6s ease-in-out 1.4s infinite alternate; }
     .edhero__card--br{ bottom:14px; right:-14px; animation:edhero-float-down 6s ease-in-out 1.4s infinite alternate; }
     .edhero__card i{
@@ -404,8 +421,9 @@
       box-shadow:0 8px 22px -4px color-mix(in srgb, var(--color-brand) 70%, transparent);
     }
     .edhero__card--br i{ background:linear-gradient(135deg, var(--color-accent-bright), var(--color-accent)); box-shadow:0 8px 22px -4px color-mix(in srgb, var(--color-accent) 70%, transparent); }
-    .edhero__card b{ display:block; font-size:22px; color:var(--color-fg); text-shadow:0 2px 10px rgb(0 0 0 / .9), 0 1px 2px rgb(0 0 0 / .9); }
-    .edhero__card small{ color:var(--color-fg-2); font-size:18px; text-shadow:0 2px 8px rgb(0 0 0 / .9), 0 1px 2px rgb(0 0 0 / .9); }
+    .edhero__card > div{ max-width:170px; min-width:0; }
+    .edhero__card b{ display:block; font-size:clamp(14.5px,2.6vw,22px); color:var(--color-fg); text-shadow:0 2px 10px rgb(0 0 0 / .9), 0 1px 2px rgb(0 0 0 / .9); }
+    .edhero__card small{ color:var(--color-fg-2); font-size:clamp(12px,2vw,18px); text-shadow:0 2px 8px rgb(0 0 0 / .9), 0 1px 2px rgb(0 0 0 / .9); }
 
     @keyframes edhero-up{ from{ opacity:0; transform:translateY(18px);} to{ opacity:1; transform:translateY(0);} }
     @keyframes edhero-float-up{ from{ transform:translateY(0);} to{ transform:translateY(-50px);} }
@@ -478,17 +496,52 @@
       var reveal = w.querySelector('.edhero__word-reveal');
       if (!reveal) return;
       reveal.style.setProperty('--clampx', '0px');
+      reveal.style.setProperty('--clampy', '0px');
+
       var rect = reveal.getBoundingClientRect();
       var margin = 14;
-      var shift = 0;
-      if (rect.right > window.innerWidth - margin) shift = (window.innerWidth - margin) - rect.right;
-      else if (rect.left < margin) shift = margin - rect.left;
-      if (shift) reveal.style.setProperty('--clampx', shift + 'px');
+      var shiftX = 0;
+      if (rect.right > window.innerWidth - margin) shiftX = (window.innerWidth - margin) - rect.right;
+      else if (rect.left < margin) shiftX = margin - rect.left;
+      if (shiftX) reveal.style.setProperty('--clampx', shiftX + 'px');
+
+      /* Titel kann bei manchen Breiten anders umbrechen als erwartet;
+         wenn der Reveal-Text dadurch eine andere Titelzeile berühren würde,
+         zusätzlich weiter weg schieben. */
+      var title = document.querySelector('.edhero__title');
+      if (title){
+        rect = reveal.getBoundingClientRect();
+        var trect = title.getBoundingClientRect();
+        var overlapsH = rect.right > trect.left && rect.left < trect.right;
+        var pos = w.getAttribute('data-pos');
+        var isAbove = (pos === 'tl' || pos === 'tr');
+        if (overlapsH){
+          if (isAbove && rect.bottom > trect.top){
+            reveal.style.setProperty('--clampy', (trect.top - rect.bottom - 6) + 'px');
+          } else if (!isAbove && rect.top < trect.bottom){
+            reveal.style.setProperty('--clampy', (trect.bottom - rect.top + 6) + 'px');
+          }
+        }
+      }
     }
+
+    /* ---- Dauerhafter Hinweis-Puls, bis zur ersten echten Interaktion ---- */
+    var ENGAGED_KEY = 'ss_engaged_v1';
+    var engaged = true;
+    try { engaged = !!localStorage.getItem(ENGAGED_KEY); } catch(e){}
+    if (!reduced && !engaged) root.classList.add('is-unengaged');
+    function markEngaged(){
+      if (!root.classList.contains('is-unengaged')) return;
+      root.classList.remove('is-unengaged');
+      try { localStorage.setItem(ENGAGED_KEY, '1'); } catch(e){}
+    }
+    var bereicheCard = root.querySelector('.edhero__card--tl');
+    if (bereicheCard) bereicheCard.addEventListener('click', markEngaged);
 
     words.forEach(function(w){
       w.addEventListener('click', function(e){
         e.stopPropagation();
+        markEngaged();
         var wasOpen = w.classList.contains('is-open');
         words.forEach(function(o){ o.classList.remove('is-open'); });
         if (!wasOpen){ w.classList.add('is-open'); clampReveal(w); }
@@ -2989,9 +3042,11 @@
       color:var(--color-fg); opacity:.9; overflow-wrap:anywhere;
       transition:opacity .2s ease, background .1s ease;
     }
-    .offer-footer__wordmark--text:hover{
-      opacity:1;
-      background:radial-gradient(circle 130px at var(--wx,50%) var(--wy,50%), color-mix(in srgb, var(--color-brand) 22%, transparent) 0%, transparent 72%);
+    @media (hover:hover) and (pointer:fine){
+      .offer-footer__wordmark--text:hover{
+        opacity:1;
+        background:radial-gradient(circle 130px at var(--wx,50%) var(--wy,50%), color-mix(in srgb, var(--color-brand) 22%, transparent) 0%, transparent 72%);
+      }
     }
     .offer-footer__wordmark--text em{
       font-style:normal;
