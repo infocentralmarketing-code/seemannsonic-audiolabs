@@ -61,11 +61,13 @@
     .offer-nav__logo{ height:26px; width:auto; display:block; }
     .offer-nav__wordmark-group{
       display:flex; flex-direction:column; line-height:1.05;
-      background:radial-gradient(ellipse 90% 140% at center, color-mix(in srgb, var(--color-brand) 9%, transparent) 0%, transparent 75%);
+      background:transparent;
       padding:3px 7px; margin:-3px -7px;
-      transition:background .25s ease;
+      transition:background .1s ease;
     }
-    .offer-nav__brand:hover .offer-nav__wordmark-group{ background:radial-gradient(ellipse 90% 140% at center, color-mix(in srgb, var(--color-brand) 22%, transparent) 0%, transparent 75%); }
+    .offer-nav__brand:hover .offer-nav__wordmark-group{
+      background:radial-gradient(circle 60px at var(--wx,50%) var(--wy,50%), color-mix(in srgb, var(--color-brand) 28%, transparent) 0%, transparent 72%);
+    }
     .offer-nav__wordmark{ font-family:var(--font-display); font-size:18px; font-weight:800; letter-spacing:.01em; text-transform:uppercase; }
     .offer-nav__wordmark em{
       font-style:normal;
@@ -280,11 +282,13 @@
     /* ---- Kopfzeile: Wort-Hover mit Nutzen-Reveal ---- */
     .edhero__word{ position:relative; display:inline-block; white-space:nowrap; cursor:default; }
     span.edhero__word{
-      background:radial-gradient(ellipse 85% 130% at center, color-mix(in srgb, var(--color-brand) 9%, transparent) 0%, transparent 75%);
+      background:transparent;
       padding:2px 5px; margin:-2px -5px;
-      transition:background .25s ease;
+      transition:background .1s ease;
     }
-    span.edhero__word:hover{ background:radial-gradient(ellipse 85% 130% at center, color-mix(in srgb, var(--color-brand) 22%, transparent) 0%, transparent 75%); }
+    span.edhero__word:hover{
+      background:radial-gradient(circle 55px at var(--wx,50%) var(--wy,50%), color-mix(in srgb, var(--color-brand) 28%, transparent) 0%, transparent 72%);
+    }
     .edhero__word-reveal{
       position:absolute; z-index:5; width:max-content; white-space:nowrap;
       font-family:var(--font-display); font-weight:700; font-style:italic;
@@ -490,6 +494,13 @@
         if (!wasOpen){ w.classList.add('is-open'); clampReveal(w); }
       });
       w.addEventListener('mouseenter', function(){ clampReveal(w); });
+      if (!reduced){
+        w.addEventListener('mousemove', function(e){
+          var r = w.getBoundingClientRect();
+          w.style.setProperty('--wx', ((e.clientX - r.left) / r.width * 100) + '%');
+          w.style.setProperty('--wy', ((e.clientY - r.top) / r.height * 100) + '%');
+        });
+      }
     });
     document.addEventListener('click', function(){
       words.forEach(function(o){ o.classList.remove('is-open'); });
@@ -2972,15 +2983,15 @@
     }
     .offer-footer__wordmark--text{
       display:block; text-decoration:none;
-      background:radial-gradient(ellipse 55% 130% at center, color-mix(in srgb, var(--color-brand) 6%, transparent) 0%, transparent 72%);
+      background:transparent;
       font-family:var(--font-display); font-weight:800; letter-spacing:-.03em; text-transform:uppercase;
       font-size:clamp(52px, 11vw, 168px); line-height:1; text-align:center;
       color:var(--color-fg); opacity:.9; overflow-wrap:anywhere;
-      transition:opacity .2s ease, background .25s ease;
+      transition:opacity .2s ease, background .1s ease;
     }
     .offer-footer__wordmark--text:hover{
       opacity:1;
-      background:radial-gradient(ellipse 55% 130% at center, color-mix(in srgb, var(--color-brand) 14%, transparent) 0%, transparent 72%);
+      background:radial-gradient(circle 130px at var(--wx,50%) var(--wy,50%), color-mix(in srgb, var(--color-brand) 22%, transparent) 0%, transparent 72%);
     }
     .offer-footer__wordmark--text em{
       font-style:normal;
@@ -3376,6 +3387,19 @@
     });
   }, { passive: true });
   document.documentElement.addEventListener('mouseleave', function(){ glow.classList.remove('is-active'); });
+})();
+</script>
+<script>
+(function(){
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var els = document.querySelectorAll('.offer-nav__wordmark-group, .offer-footer__wordmark--text');
+  els.forEach(function(el){
+    el.addEventListener('mousemove', function(e){
+      var r = el.getBoundingClientRect();
+      el.style.setProperty('--wx', ((e.clientX - r.left) / r.width * 100) + '%');
+      el.style.setProperty('--wy', ((e.clientY - r.top) / r.height * 100) + '%');
+    });
+  });
 })();
 </script>
 <script src="assets/vanta-bg.js" defer></script>
