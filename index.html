@@ -59,12 +59,14 @@
     /* Brand */
     .offer-nav__brand{ display:inline-flex; align-items:center; flex:0 0 auto; text-decoration:none; }
     .offer-nav__logo{ height:26px; width:auto; display:block; }
-    .offer-nav__wordmark-group{ display:flex; flex-direction:column; line-height:1.05; }
-    .offer-nav__wordmark{
-      font-family:var(--font-display); font-size:18px; font-weight:800; letter-spacing:.01em; text-transform:uppercase;
-      text-decoration:underline dotted; text-decoration-thickness:1.5px; text-underline-offset:4px;
-      text-decoration-color:color-mix(in srgb, var(--color-fg) 40%, transparent);
+    .offer-nav__wordmark-group{
+      display:flex; flex-direction:column; line-height:1.05;
+      background:radial-gradient(ellipse 90% 140% at center, color-mix(in srgb, var(--color-brand) 9%, transparent) 0%, transparent 75%);
+      padding:3px 7px; margin:-3px -7px;
+      transition:background .25s ease;
     }
+    .offer-nav__brand:hover .offer-nav__wordmark-group{ background:radial-gradient(ellipse 90% 140% at center, color-mix(in srgb, var(--color-brand) 22%, transparent) 0%, transparent 75%); }
+    .offer-nav__wordmark{ font-family:var(--font-display); font-size:18px; font-weight:800; letter-spacing:.01em; text-transform:uppercase; }
     .offer-nav__wordmark em{
       font-style:normal;
       background:linear-gradient(180deg, #ffffff 0%, var(--color-silver) 55%, #7f8ca0 100%);
@@ -278,9 +280,11 @@
     /* ---- Kopfzeile: Wort-Hover mit Nutzen-Reveal ---- */
     .edhero__word{ position:relative; display:inline-block; white-space:nowrap; cursor:default; }
     span.edhero__word{
-      text-decoration:underline dotted; text-decoration-thickness:2px; text-underline-offset:9px;
-      text-decoration-color:color-mix(in srgb, var(--color-fg) 38%, transparent);
+      background:radial-gradient(ellipse 85% 130% at center, color-mix(in srgb, var(--color-brand) 9%, transparent) 0%, transparent 75%);
+      padding:2px 5px; margin:-2px -5px;
+      transition:background .25s ease;
     }
+    span.edhero__word:hover{ background:radial-gradient(ellipse 85% 130% at center, color-mix(in srgb, var(--color-brand) 22%, transparent) 0%, transparent 75%); }
     .edhero__word-reveal{
       position:absolute; z-index:5; width:max-content; white-space:nowrap;
       font-family:var(--font-display); font-weight:700; font-style:italic;
@@ -2967,15 +2971,17 @@
       display:block;
     }
     .offer-footer__wordmark--text{
-      display:block;
-      text-decoration:underline dotted; text-decoration-thickness:3px; text-underline-offset:14px;
-      text-decoration-color:color-mix(in srgb, var(--color-fg) 30%, transparent);
+      display:block; text-decoration:none;
+      background:radial-gradient(ellipse 55% 130% at center, color-mix(in srgb, var(--color-brand) 6%, transparent) 0%, transparent 72%);
       font-family:var(--font-display); font-weight:800; letter-spacing:-.03em; text-transform:uppercase;
       font-size:clamp(52px, 11vw, 168px); line-height:1; text-align:center;
       color:var(--color-fg); opacity:.9; overflow-wrap:anywhere;
-      transition:opacity .2s ease;
+      transition:opacity .2s ease, background .25s ease;
     }
-    .offer-footer__wordmark--text:hover{ opacity:1; }
+    .offer-footer__wordmark--text:hover{
+      opacity:1;
+      background:radial-gradient(ellipse 55% 130% at center, color-mix(in srgb, var(--color-brand) 14%, transparent) 0%, transparent 72%);
+    }
     .offer-footer__wordmark--text em{
       font-style:normal;
       background:linear-gradient(180deg, #ffffff 0%, var(--color-silver) 55%, #7f8ca0 100%);
