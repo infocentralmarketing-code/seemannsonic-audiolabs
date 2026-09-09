@@ -288,19 +288,19 @@
     .edhero__word-reveal--tr{ left:0; bottom:100%; margin-bottom:8px; text-align:left; transform:translate(8px,4px); }
     .edhero__word:hover .edhero__word-reveal--tr, .edhero__word.is-open .edhero__word-reveal--tr{ transform:translate(22px,0); }
 
-    .edhero__word-reveal--bl{ right:0; top:100%; margin-top:8px; text-align:right; transform:translate(-8px,-4px); }
-    .edhero__word:hover .edhero__word-reveal--bl, .edhero__word.is-open .edhero__word-reveal--bl{ transform:translate(-22px,0); }
+    .edhero__word-reveal--bl{ left:0; right:auto; top:100%; margin-top:8px; text-align:left; transform:translate(0,-4px); }
+    .edhero__word:hover .edhero__word-reveal--bl, .edhero__word.is-open .edhero__word-reveal--bl{ transform:translate(0,0); }
 
     .edhero__word-reveal--r{ right:0; top:100%; margin-top:8px; text-align:right; transform:translate(8px,-4px); }
     .edhero__word:hover .edhero__word-reveal--r, .edhero__word.is-open .edhero__word-reveal--r{ transform:translate(20px,0); }
 
     @media (max-width:640px){
-      .edhero__word-reveal{ font-size:16px; }
+      .edhero__word-reveal{ font-size:14px; }
       .edhero__word-reveal--tl, .edhero__word-reveal--tr{ left:50%; right:auto; bottom:100%; margin-bottom:8px; text-align:center; transform:translate(calc(-50% + var(--clampx,0px)),4px); }
       .edhero__word:hover .edhero__word-reveal--tl, .edhero__word.is-open .edhero__word-reveal--tl,
       .edhero__word:hover .edhero__word-reveal--tr, .edhero__word.is-open .edhero__word-reveal--tr{ transform:translate(calc(-50% + var(--clampx,0px)),0); }
-      .edhero__word-reveal--bl{ left:50%; right:auto; top:100%; margin-top:8px; text-align:center; transform:translate(calc(-50% + var(--clampx,0px)),-4px); }
-      .edhero__word:hover .edhero__word-reveal--bl, .edhero__word.is-open .edhero__word-reveal--bl{ transform:translate(calc(-50% + var(--clampx,0px)),0); }
+      .edhero__word-reveal--bl{ left:0; right:auto; top:100%; margin-top:8px; text-align:left; transform:translate(0,-4px); }
+      .edhero__word:hover .edhero__word-reveal--bl, .edhero__word.is-open .edhero__word-reveal--bl{ transform:translate(0,0); }
       .edhero__word-reveal--r{ left:50%; top:100%; margin-left:0; margin-top:8px; text-align:center; transform:translate(calc(-50% + var(--clampx,0px)),-4px); }
       .edhero__word:hover .edhero__word-reveal--r, .edhero__word.is-open .edhero__word-reveal--r{ transform:translate(calc(-50% + var(--clampx,0px)),0); }
     }
@@ -455,7 +455,7 @@
       if (!reveal) return;
       reveal.style.setProperty('--clampx', '0px');
       var rect = reveal.getBoundingClientRect();
-      var margin = 12;
+      var margin = 14;
       var shift = 0;
       if (rect.right > window.innerWidth - margin) shift = (window.innerWidth - margin) - rect.right;
       else if (rect.left < margin) shift = margin - rect.left;
