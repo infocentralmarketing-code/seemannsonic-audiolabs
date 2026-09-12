@@ -438,8 +438,8 @@
     .edhero__card:hover .edhero__card-arrow{ transform:translateX(3px); opacity:1; }
     @keyframes edhero-arrow-nudge{ 0%,100%{ transform:translateX(0); opacity:.6; } 50%{ transform:translateX(5px); opacity:1; } }
     .edhero.is-unengaged .edhero__card-arrow{ animation:edhero-arrow-nudge 1.8s ease-in-out infinite; }
-    .edhero__card--tl{ top:10px; left:-20px; animation:edhero-float-up 6s ease-in-out 1.4s infinite alternate; }
-    .edhero__card--br{ bottom:14px; right:-14px; animation:edhero-float-down 6s ease-in-out 1.4s infinite alternate; }
+    .edhero__card--tl{ top:-8px; left:-36px; animation:edhero-float-up 6s ease-in-out 1.4s infinite alternate; }
+    .edhero__card--br{ bottom:-8px; right:-36px; animation:edhero-float-down 6s ease-in-out 1.4s infinite alternate; }
     .edhero__card i{
       width:38px; height:38px; border-radius:50%; flex-shrink:0;
       display:grid; place-items:center; color:#fff;
@@ -459,8 +459,8 @@
       .edhero{ padding:70px 28px 80px; }
       .edhero__inner{ grid-template-columns:1fr; gap:48px; }
       .edhero__visual{ max-width:520px; margin:0 auto; }
-      .edhero__card--tl{ left:-8px; }
-      .edhero__card--br{ right:-6px; }
+      .edhero__card--tl{ top:-2px; left:-18px; }
+      .edhero__card--br{ bottom:-2px; right:-18px; }
       .edhero__card{ background:rgb(8 17 31 / .78); backdrop-filter:blur(6px); box-shadow:0 8px 20px -4px rgb(0 0 0 / .5); }
     }
     @media (max-width:600px){
@@ -495,8 +495,17 @@
     </div>
 
     <div class="edhero__visual">
-      <div class="edhero__photo">
-        <img src="assets/brand/logo-icon.webp" alt="SeemannSonic Audiolabs Logo" loading="eager" decoding="async">
+      <div class="edhero__photo" id="ssIntroPlayer" style="cursor:pointer;">
+        <img src="assets/brand/logo-icon.webp" alt="SeemannSonic Audiolabs Logo" loading="eager" decoding="async" id="ssIntroPoster">
+        <video id="ssIntroVideo" playsinline preload="none" style="position:absolute; left:50%; top:8%; width:64%; aspect-ratio:1/1; transform:translateX(-50%); object-fit:cover; border-radius:50%; box-shadow:0 20px 50px rgba(0,0,0,.5); display:none;">
+          <source src="assets/video/intro.mp4" type="video/mp4">
+        </video>
+        <span id="ssIntroPlayIcon" aria-hidden="true" style="position:absolute; left:50%; top:8%; width:64%; aspect-ratio:1/1; transform:translateX(-50%); display:flex; align-items:center; justify-content:center; pointer-events:none;">
+          <svg width="26%" height="26%" viewBox="0 0 24 24" style="filter:drop-shadow(0 2px 8px rgba(0,0,0,.6));">
+            <circle cx="12" cy="12" r="11" fill="rgba(8,17,31,0.55)"></circle>
+            <path d="M9.5 7.5v9l8-4.5z" fill="#ffffff"></path>
+          </svg>
+        </span>
       </div>
       <a class="edhero__card edhero__card--tl" href="#bereiche" style="text-decoration:none;cursor:pointer;">
         <i><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></i>
@@ -3498,5 +3507,38 @@
 })();
 </script>
 <script src="assets/vanta-bg.js" defer></script>
+
+<script>
+(function(){
+  var wrap  = document.getElementById('ssIntroPlayer');
+  var video = document.getElementById('ssIntroVideo');
+  var poster = document.getElementById('ssIntroPoster');
+  var icon  = document.getElementById('ssIntroPlayIcon');
+  if(!wrap || !video) return;
+  wrap.style.position = wrap.style.position || 'relative';
+
+  wrap.addEventListener('click', function(){
+    if (video.paused) {
+      poster.style.opacity = '0.15';
+      video.style.display  = 'block';
+      icon.style.display   = 'none';
+      video.currentTime = 0;
+      video.play();
+    } else {
+      video.pause();
+    }
+  });
+
+  video.addEventListener('ended', function(){
+    video.style.display  = 'none';
+    poster.style.opacity = '1';
+    icon.style.display   = 'flex';
+  });
+
+  wrap.addEventListener('mousedown', function(){ wrap.style.transform = 'scale(0.97)'; });
+  wrap.addEventListener('mouseup',   function(){ wrap.style.transform = 'scale(1)'; });
+  wrap.addEventListener('mouseleave',function(){ wrap.style.transform = 'scale(1)'; });
+})();
+</script>
 </body>
 </html>
