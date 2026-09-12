@@ -34,13 +34,13 @@ jobs:
           mkdir deploy
           cp maintenance.html deploy/index.html
 
-      - name: Zu IONOS übertragen
-        uses: wlixcc/SFTP-Deploy-Action@v1.2.6
-        with:
-          username: ${{ secrets.IONOS_USER }}
-          server: ${{ secrets.IONOS_HOST }}
-          port: 22
-          password: ${{ secrets.IONOS_PASSWORD }}
-          local_path: './deploy/*'
-          remote_path: './'
-          sftp_only: true
+           - name: Zu IONOS übertragen
+        env:
+          SSHPASS: ${{ secrets.IONOS_PASSWORD }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y sshpass
+          sshpass -e sftp -o StrictHostKeyChecking=no -P 22 ${{ secrets.IONOS_USER }}@${{ secrets.IONOS_HOST }} <<'EOF'
+          put -r deploy/*
+          bye
+          EOF
