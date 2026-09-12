@@ -14,25 +14,15 @@ jobs:
       - name: Repository laden
         uses: actions/checkout@v4
 
-      - name: Wartungsmodus pruefen
-        id: maintenance
-        run: |
-          MODE=$(tr -d '[:space:]' < maintenance-mode.txt)
-          echo "mode=$MODE" >> "$GITHUB_OUTPUT"
-
-      - name: Normale Webseite vorbereiten
-        if: steps.maintenance.outputs.mode == 'OFF'
+      - name: Deployment vorbereiten
         run: |
           mkdir -p deploy
           cp index.html deploy/index.html
+          cp landing.html deploy/landing.html
+          cp maintenance.html deploy/maintenance.html
+          cp maintenance-mode.txt deploy/maintenance-mode.txt
           cp copy.json deploy/copy.json
           cp -r assets deploy/assets
-
-      - name: Wartungsseite vorbereiten
-        if: steps.maintenance.outputs.mode == 'ON'
-        run: |
-          mkdir -p deploy
-          cp maintenance.html deploy/index.html
 
       - name: SFTP Werkzeug installieren
         run: |
