@@ -1,43 +1,99 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SeemannSonic Audiolabs – Wartung</title>
-  <style>
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      background: #050b14;
-      color: white;
-      font-family: Arial, sans-serif;
-    }
-    .box {
-      padding: 30px;
-      max-width: 650px;
-    }
-    h1 {
-      font-size: 38px;
-      margin-bottom: 20px;
-    }
-    p {
-      font-size: 20px;
-      line-height: 1.6;
-      color: #cbd5e1;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SeemannSonic Audiolabs</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px;
+  background:
+    radial-gradient(circle at 50% 35%, #102b58 0%, #071426 38%, #030914 72%);
+  color: #f2f6fb;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.card {
+  width: min(760px, 100%);
+  padding: 58px 45px;
+  text-align: center;
+  border: 1px solid rgba(61, 139, 255, 0.35);
+  border-radius: 22px;
+  background: rgba(5, 15, 30, 0.88);
+  box-shadow:
+    0 0 55px rgba(15, 107, 255, 0.20),
+    0 25px 70px rgba(0, 0, 0, 0.45);
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 68px;
+  height: 68px;
+  margin-bottom: 24px;
+  border-radius: 50%;
+  border: 2px solid #3d8bff;
+  color: #ffffff;
+  font-size: 27px;
+  font-weight: 800;
+  box-shadow: 0 0 25px rgba(61, 139, 255, 0.45);
+}
+
+h1 {
+  margin: 0 0 22px;
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+p {
+  margin: 7px 0;
+  color: #c9d5e5;
+  font-size: clamp(18px, 2.5vw, 21px);
+  line-height: 1.55;
+}
+
+.brand {
+  margin-top: 34px;
+  color: #3d8bff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+}
+
+@media (max-width: 600px) {
+  .card {
+    padding: 42px 22px;
+  }
+}
+</style>
 </head>
+
 <body>
-  <div class="box">
-    <h1>SeemannSonic Audiolabs</h1>
-    <p>
-      Wir arbeiten gerade an etwas Neuem für dich.<br>
-      Unsere Seite ist in Kürze wieder erreichbar.
-    </p>
-  </div>
+
+<div class="card">
+
+  <div class="logo">Ss</div>
+
+  <h1>SeemannSonic Audiolabs</h1>
+
+  <p>Wir arbeiten gerade an etwas Neuem für dich.</p>
+  <p>Unsere Seite ist in Kürze wieder erreichbar.</p>
+
+  <div class="brand">SEEMANNSONIC AUDIOLABS</div>
+
+</div>
+
 </body>
 </html>
