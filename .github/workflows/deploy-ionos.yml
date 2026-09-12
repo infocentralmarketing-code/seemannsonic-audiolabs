@@ -1,4 +1,5 @@
-name: SeemannSonic - IONOS Deployment
+name: Website EIN / AUS
+run-name: ${{ github.event_name == 'workflow_dispatch' && 'Website umschalten' || 'Website aktualisieren' }}
 
 on:
   push:
@@ -6,13 +7,56 @@ on:
       - main
   workflow_dispatch:
 
+concurrency:
+  group: ionos-deployment
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
 jobs:
   deploy:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
       - name: Repository laden
         uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: SFTP Werkzeug installieren
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y sshpass
+
+      - name: Website EIN oder AUS schalten
+        if: github.event_name == 'workflow_dispatch'
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git log -1 --format=%B -- maintenance-mode.txt | grep -Fxq "Toggle-Run: $GITHUB_RUN_ID"; then
+            echo "Dieser Lauf hat bereits umgeschaltet. Nur erneut veroeffentlichen."
+          else
+            if [ "$GITHUB_RUN_ATTEMPT" != "1" ]; then
+              echo "::error::Zustand wurde inzwischen geaendert. Bitte einen neuen Workflow starten."
+              exit 1
+            fi
+            current=$(tr -d '[:space:]' < maintenance-mode.txt)
+            case "$current" in
+              ON) next=OFF; label="Website EIN - normale Website" ;;
+              OFF) next=ON; label="Website AUS - Wartungsseite" ;;
+              *) echo "::error::Ungueltiger Wartungszustand: $current"; exit 1 ;;
+            esac
+            printf "%s\n" "$next" > maintenance-mode.txt
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add maintenance-mode.txt
+            git commit -m "$label" -m "Toggle-Run: $GITHUB_RUN_ID"
+            git push origin HEAD:main
+          fi
 
       - name: Deployment vorbereiten
         run: |
@@ -24,13 +68,32 @@ jobs:
           cp copy.json deploy/copy.json
           cp -r assets deploy/assets
 
-      - name: SFTP Werkzeug installieren
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y sshpass
-
       - name: Zu IONOS uebertragen
         env:
           SSHPASS: ${{ secrets.IONOS_PASSWORD }}
+          IONOS_USER: ${{ secrets.IONOS_USER }}
+          IONOS_HOST: ${{ secrets.IONOS_HOST }}
         run: |
-          printf "put -r deploy/*\nbye\n" | sshpass -e sftp -o StrictHostKeyChecking=no -P 22 "${{ secrets.IONOS_USER }}@${{ secrets.IONOS_HOST }}"
+          printf "put -r deploy/*\nbye\n" | sshpass -e sftp -o StrictHostKeyChecking=no -P 22 "$IONOS_USER@$IONOS_HOST"
+
+      - name: Oeffentlichen Schalter pruefen
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected=$(tr -d '[:space:]' < maintenance-mode.txt)
+          matched=false
+          for attempt in 1 2 3 4 5 6; do
+            actual=$(curl --fail --silent --show-error --max-time 20 "https://lp.seemannsonic.com/maintenance-mode.txt?run=$GITHUB_RUN_ID&attempt=$attempt" | tr -d '[:space:]') || actual=ERROR
+            if [ "$actual" = "$expected" ]; then matched=true; break; fi
+            sleep 5
+          done
+          if [ "$matched" != true ]; then
+            echo "::error::Live-Pruefung fehlgeschlagen. Erwartet: $expected, erhalten: $actual"
+            exit 1
+          fi
+          if [ "$expected" = ON ]; then
+            echo "## Website AUS - Wartungsseite ist aktiv" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "## Website EIN - normale Website ist aktiv" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "Live-Schalter erfolgreich geprueft. [Website oeffnen](https://lp.seemannsonic.com/)" >> "$GITHUB_STEP_SUMMARY"
