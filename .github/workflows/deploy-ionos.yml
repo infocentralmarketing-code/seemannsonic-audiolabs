@@ -1,4 +1,4 @@
-name: SeemannSonic – IONOS Deployment
+name: SeemannSonic - IONOS Deployment
 
 on:
   push:
@@ -14,7 +14,7 @@ jobs:
       - name: Repository laden
         uses: actions/checkout@v4
 
-      - name: Wartungsmodus prüfen
+      - name: Wartungsmodus pruefen
         id: maintenance
         run: |
           MODE=$(tr -d '[:space:]' < maintenance-mode.txt)
@@ -23,7 +23,7 @@ jobs:
       - name: Normale Webseite vorbereiten
         if: steps.maintenance.outputs.mode == 'OFF'
         run: |
-          mkdir deploy
+          mkdir -p deploy
           cp index.html deploy/index.html
           cp copy.json deploy/copy.json
           cp -r assets deploy/assets
@@ -31,16 +31,16 @@ jobs:
       - name: Wartungsseite vorbereiten
         if: steps.maintenance.outputs.mode == 'ON'
         run: |
-          mkdir deploy
+          mkdir -p deploy
           cp maintenance.html deploy/index.html
 
-           - name: Zu IONOS übertragen
-        env:
-          SSHPASS: ${{ secrets.IONOS_PASSWORD }}
+      - name: SFTP Werkzeug installieren
         run: |
           sudo apt-get update
           sudo apt-get install -y sshpass
-          sshpass -e sftp -o StrictHostKeyChecking=no -P 22 ${{ secrets.IONOS_USER }}@${{ secrets.IONOS_HOST }} <<'EOF'
-          put -r deploy/*
-          bye
-          EOF
+
+      - name: Zu IONOS uebertragen
+        env:
+          SSHPASS: ${{ secrets.IONOS_PASSWORD }}
+        run: |
+          sshpass -e scp -o StrictHostKeyChecking=no -P 22 -r deploy/* "${{ secrets.IONOS_USER }}@${{ secrets.IONOS_HOST }}:./"
