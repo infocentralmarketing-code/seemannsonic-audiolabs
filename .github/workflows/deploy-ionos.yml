@@ -43,4 +43,4 @@ jobs:
         env:
           SSHPASS: ${{ secrets.IONOS_PASSWORD }}
         run: |
-          sshpass -e scp -o StrictHostKeyChecking=no -P 22 -r deploy/* "${{ secrets.IONOS_USER }}@${{ secrets.IONOS_HOST }}:./"
+          printf "put -r deploy/*\nbye\n" | sshpass -e sftp -o StrictHostKeyChecking=no -P 22 "${{ secrets.IONOS_USER }}@${{ secrets.IONOS_HOST }}"
