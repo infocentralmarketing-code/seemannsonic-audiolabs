@@ -1,0 +1,46 @@
+name: SeemannSonic – IONOS Deployment
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Repository laden
+        uses: actions/checkout@v4
+
+      - name: Wartungsmodus prüfen
+        id: maintenance
+        run: |
+          MODE=$(tr -d '[:space:]' < maintenance-mode.txt)
+          echo "mode=$MODE" >> "$GITHUB_OUTPUT"
+
+      - name: Normale Webseite vorbereiten
+        if: steps.maintenance.outputs.mode == 'OFF'
+        run: |
+          mkdir deploy
+          cp index.html deploy/index.html
+          cp copy.json deploy/copy.json
+          cp -r assets deploy/assets
+
+      - name: Wartungsseite vorbereiten
+        if: steps.maintenance.outputs.mode == 'ON'
+        run: |
+          mkdir deploy
+          cp maintenance.html deploy/index.html
+
+      - name: Zu IONOS übertragen
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.6
+        with:
+          username: ${{ secrets.IONOS_USER }}
+          server: ${{ secrets.IONOS_HOST }}
+          port: 22
+          password: ${{ secrets.IONOS_PASSWORD }}
+          local_path: './deploy/*'
+          remote_path: './'
+          sftp_only: true
