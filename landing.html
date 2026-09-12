@@ -497,15 +497,31 @@
     <div class="edhero__visual">
       <div class="edhero__photo" id="ssIntroPlayer" style="cursor:pointer;">
         <img src="assets/brand/logo-icon.webp" alt="SeemannSonic Audiolabs Logo" loading="eager" decoding="async" id="ssIntroPoster">
-        <video id="ssIntroVideo" playsinline preload="none" style="position:absolute; left:50%; top:8%; width:64%; aspect-ratio:1/1; transform:translateX(-50%); object-fit:cover; border-radius:50%; box-shadow:0 20px 50px rgba(0,0,0,.5); display:none;">
-          <source src="assets/video/intro.mp4" type="video/mp4">
-        </video>
-        <span id="ssIntroPlayIcon" aria-hidden="true" style="position:absolute; left:50%; top:8%; width:64%; aspect-ratio:1/1; transform:translateX(-50%); display:flex; align-items:center; justify-content:center; pointer-events:none;">
-          <svg width="26%" height="26%" viewBox="0 0 24 24" style="filter:drop-shadow(0 2px 8px rgba(0,0,0,.6));">
+
+        <div id="ssIntroVideoBox" style="display:none; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:88%; max-width:460px; aspect-ratio:16/9; background:#000; border-radius:14px; overflow:hidden; box-shadow:0 24px 60px rgba(0,0,0,.55);">
+          <button id="ssIntroClose" type="button" aria-label="Video schliessen" style="position:absolute; top:8px; right:8px; z-index:2; width:28px; height:28px; border:0; border-radius:50%; background:rgba(0,0,0,.6); color:#fff; font-size:16px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center;">&times;</button>
+          <video id="ssIntroVideo" playsinline preload="none" style="width:100%; height:100%; object-fit:contain; background:#000; display:block;">
+            <source src="assets/video/intro.mp4" type="video/mp4">
+          </video>
+
+          <div id="ssIntroControls" style="position:absolute; left:0; right:0; bottom:0; display:flex; align-items:center; gap:8px; padding:8px 10px; background:linear-gradient(to top, rgba(0,0,0,.8), rgba(0,0,0,0)); ">
+            <button id="ssIntroPlayPause" type="button" aria-label="Abspielen / Pause" style="flex:0 0 auto; width:30px; height:30px; border:0; border-radius:50%; background:rgba(255,255,255,.14); color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+              <svg id="ssIntroPlayPauseIcon" width="14" height="14" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg>
+            </button>
+            <input id="ssIntroSeek" type="range" min="0" max="100" value="0" step="0.1" style="flex:1 1 auto; accent-color:#3D8BFF; cursor:pointer;">
+            <span id="ssIntroTime" style="flex:0 0 auto; color:#fff; font-size:11px; min-width:76px; text-align:right; font-family:var(--font-sans, sans-serif);">0:00 / 0:00</span>
+            <button id="ssIntroStop" type="button" aria-label="Stopp, zurück zum Logo" style="flex:0 0 auto; width:30px; height:30px; border:0; border-radius:50%; background:rgba(255,255,255,.14); color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+              <svg width="12" height="12" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" fill="currentColor"></rect></svg>
+            </button>
+          </div>
+        </div>
+
+        <button id="ssIntroPlayIcon" type="button" aria-label="Video abspielen" style="position:absolute; inset:0; width:100%; height:100%; padding:0; margin:0; border:0; background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+          <svg width="22%" height="22%" viewBox="0 0 24 24" style="filter:drop-shadow(0 2px 8px rgba(0,0,0,.6));">
             <circle cx="12" cy="12" r="11" fill="rgba(8,17,31,0.55)"></circle>
             <path d="M9.5 7.5v9l8-4.5z" fill="#ffffff"></path>
           </svg>
-        </span>
+        </button>
       </div>
       <a class="edhero__card edhero__card--tl" href="#bereiche" style="text-decoration:none;cursor:pointer;">
         <i><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></i>
@@ -3510,34 +3526,106 @@
 
 <script>
 (function(){
-  var wrap  = document.getElementById('ssIntroPlayer');
-  var video = document.getElementById('ssIntroVideo');
-  var poster = document.getElementById('ssIntroPoster');
-  var icon  = document.getElementById('ssIntroPlayIcon');
+  var wrap    = document.getElementById('ssIntroPlayer');
+  var poster  = document.getElementById('ssIntroPoster');
+  var videoBox= document.getElementById('ssIntroVideoBox');
+  var video   = document.getElementById('ssIntroVideo');
+  var playIcon= document.getElementById('ssIntroPlayIcon');
+  var playPauseBtn  = document.getElementById('ssIntroPlayPause');
+  var playPauseIcon = document.getElementById('ssIntroPlayPauseIcon');
+  var seek    = document.getElementById('ssIntroSeek');
+  var timeLbl = document.getElementById('ssIntroTime');
+  var stopBtn = document.getElementById('ssIntroStop');
   if(!wrap || !video) return;
-  wrap.style.position = wrap.style.position || 'relative';
 
-  wrap.addEventListener('click', function(){
-    if (video.paused) {
-      poster.style.opacity = '0.15';
-      video.style.display  = 'block';
-      icon.style.display   = 'none';
-      video.currentTime = 0;
-      video.play();
-    } else {
-      video.pause();
+  function fmt(t){
+    if(!isFinite(t) || t < 0) t = 0;
+    var m = Math.floor(t/60);
+    var s = Math.floor(t%60);
+    return m + ':' + (s<10?'0':'') + s;
+  }
+
+  function showVideo(){
+    poster.style.opacity  = '0';
+    playIcon.style.display= 'none';
+    videoBox.style.display= 'block';
+  }
+  function backToLogo(){
+    video.pause();
+    video.currentTime = 0;
+    videoBox.style.display = 'none';
+    poster.style.opacity   = '1';
+    playIcon.style.display = 'flex';
+    setPlayPauseIcon(false);
+  }
+  function setPlayPauseIcon(isPlaying){
+    playPauseIcon.innerHTML = isPlaying
+      ? '<rect x="6" y="5" width="4" height="14" fill="currentColor"></rect><rect x="14" y="5" width="4" height="14" fill="currentColor"></rect>'
+      : '<path d="M8 5v14l11-7z" fill="currentColor"></path>';
+  }
+
+  // Grosser Play-Button ueber dem Logo: startet die Wiedergabe
+  playIcon.addEventListener('click', function(e){
+    e.stopPropagation();
+    showVideo();
+    video.play();
+  });
+
+  // Play/Pause in der Steuerleiste -- setzt NICHT auf 0 zurueck
+  playPauseBtn.addEventListener('click', function(e){
+    e.stopPropagation();
+    if (video.paused) { video.play(); } else { video.pause(); }
+  });
+  video.addEventListener('play',  function(){ setPlayPauseIcon(true); });
+  video.addEventListener('pause', function(){ setPlayPauseIcon(false); });
+
+  // Zeitleiste
+  video.addEventListener('loadedmetadata', function(){
+    seek.max = video.duration || 0;
+    timeLbl.textContent = fmt(video.currentTime) + ' / ' + fmt(video.duration);
+  });
+  video.addEventListener('timeupdate', function(){
+    if (!seek.matches(':active')) seek.value = video.currentTime;
+    timeLbl.textContent = fmt(video.currentTime) + ' / ' + fmt(video.duration || 0);
+  });
+  seek.addEventListener('input', function(e){
+    e.stopPropagation();
+    video.currentTime = parseFloat(seek.value);
+  });
+  seek.addEventListener('click',     function(e){ e.stopPropagation(); });
+  seek.addEventListener('mousedown', function(e){ e.stopPropagation(); });
+
+  // Stopp: beendet, setzt zurueck auf Anfang, zeigt wieder das Logo
+  stopBtn.addEventListener('click', function(e){
+    e.stopPropagation();
+    backToLogo();
+  });
+
+  // Sichtbarer Schliessen-Knopf (X)
+  var closeBtn = document.getElementById('ssIntroClose');
+  if (closeBtn){
+    closeBtn.addEventListener('click', function(e){
+      e.stopPropagation();
+      backToLogo();
+    });
+  }
+
+  // Video zu Ende -> Logo zurueck
+  video.addEventListener('ended', backToLogo);
+
+  // Klick ausserhalb des Videobereichs schliesst das Video (nicht bei Klicks innerhalb der Videobox)
+  document.addEventListener('click', function(e){
+    if (videoBox.style.display === 'block' && !videoBox.contains(e.target)) {
+      backToLogo();
     }
   });
 
-  video.addEventListener('ended', function(){
-    video.style.display  = 'none';
-    poster.style.opacity = '1';
-    icon.style.display   = 'flex';
+  // Escape-Taste schliesst das Video
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && videoBox.style.display === 'block') {
+      backToLogo();
+    }
   });
-
-  wrap.addEventListener('mousedown', function(){ wrap.style.transform = 'scale(0.97)'; });
-  wrap.addEventListener('mouseup',   function(){ wrap.style.transform = 'scale(1)'; });
-  wrap.addEventListener('mouseleave',function(){ wrap.style.transform = 'scale(1)'; });
 })();
 </script>
 </body>
