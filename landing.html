@@ -316,7 +316,7 @@
     .edhero__tap-ring{ position:absolute; inset:0; border-radius:50%; border:2px solid var(--color-brand-bright); opacity:0; animation:edhero-tap-ring 1.8s ease-out infinite; }
     .edhero__tap-ring--2{ animation-delay:.6s; }
     .edhero__tap-tip{
-      position:absolute; left:50%; bottom:100%; transform:translate(-50%,4px);
+      position:absolute; right:0; left:auto; bottom:100%; transform:translate(0,4px); text-align:right;
       margin-bottom:10px; white-space:nowrap; pointer-events:none;
       font-family:var(--font-sans); font-weight:200; font-style:normal; font-size:15px; letter-spacing:0;
       -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; text-rendering:optimizeLegibility;
@@ -325,7 +325,7 @@
       opacity:0; transition:opacity .12s ease, transform .12s ease;
     }
     @media (hover:hover) and (pointer:fine){
-      .edhero__tap-hint:hover .edhero__tap-tip{ opacity:1; transform:translate(-50%,0); }
+      .edhero__tap-hint:hover .edhero__tap-tip{ opacity:1; transform:translate(0,0); }
     }
     @keyframes edhero-tap-ring{ 0%{ transform:scale(.35); opacity:.85; } 100%{ transform:scale(1.5); opacity:0; } }
 
@@ -497,11 +497,27 @@
       <div class="edhero__photo" id="ssIntroPlayer" style="cursor:pointer;">
         <img src="assets/brand/logo-icon.webp" alt="SeemannSonic Audiolabs Logo" loading="eager" decoding="async" id="ssIntroPoster">
 
-        <div id="ssIntroVideoBox" style="display:none; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:145%; max-width:720px; aspect-ratio:16/9; background:#000; border-radius:14px; overflow:hidden; box-shadow:0 24px 60px rgba(0,0,0,.55); z-index:3;">
+        <div id="ssIntroVideoBox" style="display:none; position:absolute; left:62%; top:50%; transform:translate(-50%,-50%); width:min(145%, 94vw); max-width:720px; aspect-ratio:16/9; background:#000; border-radius:14px; overflow:hidden; box-shadow:0 24px 60px rgba(0,0,0,.55); z-index:3;">
           <button id="ssIntroClose" type="button" aria-label="Video schliessen" style="position:absolute; top:8px; right:8px; z-index:2; width:28px; height:28px; border:0; border-radius:50%; background:rgba(0,0,0,.6); color:#fff; font-size:16px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center;">&times;</button>
           <video id="ssIntroVideo" playsinline preload="none" style="width:100%; height:100%; object-fit:contain; background:#000; display:block;">
             <source src="assets/video/intro.mp4" type="video/mp4">
           </video>
+
+          <div id="ssIntroCenterOverlay" style="position:absolute; left:0; right:0; top:0; bottom:44px; z-index:2; display:flex; align-items:center; justify-content:center; gap:20px;">
+            <button id="ssIntroCenterPlayPause" type="button" aria-label="Abspielen / Pause" style="width:54px; height:54px; border:0; border-radius:50%; background:rgba(255,255,255,.92); color:#0B1E3D; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 8px 20px rgba(0,0,0,.4);">
+              <svg id="ssIntroCenterPlayPauseIcon" width="22" height="22" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg>
+            </button>
+            <button id="ssIntroCenterStop" type="button" aria-label="Video beenden" style="width:54px; height:54px; border:0; border-radius:50%; background:#E1483C; color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 8px 20px rgba(0,0,0,.4);">
+              <svg width="20" height="20" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" fill="currentColor"></rect></svg>
+            </button>
+          </div>
+          <style>
+            #ssIntroCenterOverlay{ opacity:0; pointer-events:none; transition:opacity .2s ease; }
+            #ssIntroVideoBox:hover #ssIntroCenterOverlay,
+            #ssIntroVideoBox.controls-visible #ssIntroCenterOverlay{ opacity:1; pointer-events:auto; }
+            #ssIntroCenterOverlay button{ transition:transform .15s ease; }
+            #ssIntroCenterOverlay button:hover{ transform:scale(1.07); }
+          </style>
 
           <div id="ssIntroControls" style="position:absolute; left:0; right:0; bottom:0; display:flex; align-items:center; gap:6px; padding:9px 10px; background:linear-gradient(to top, rgba(0,0,0,.85), rgba(0,0,0,0)); flex-wrap:nowrap;">
             <button id="ssIntroBack10" type="button" aria-label="10 Sekunden zurück" style="flex:0 0 auto; width:30px; height:30px; border:0; border-radius:50%; background:rgba(255,255,255,.16); color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center;">
@@ -514,9 +530,9 @@
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 5l6 7-6 7"></path><path d="M6 5v14"></path></svg>
             </button>
             <input id="ssIntroSeek" type="range" min="0" max="100" value="0" step="0.1" style="flex:1 1 auto; accent-color:#3D8BFF; cursor:pointer;">
-            <span id="ssIntroTime" style="flex:0 0 auto; color:#fff; font-size:11px; min-width:76px; text-align:right; font-family:var(--font-sans, sans-serif);">0:00 / 0:00</span>
-            <button id="ssIntroStop" type="button" aria-label="Stopp, zurück zum Logo" style="flex:0 0 auto; display:flex; align-items:center; gap:5px; height:30px; padding:0 10px; border:0; border-radius:100px; background:#E1483C; color:#fff; font-weight:700; font-size:11px; letter-spacing:.02em; cursor:pointer;">
-              <svg width="11" height="11" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" fill="currentColor"></rect></svg>Stop
+            <span id="ssIntroTime" style="flex:0 0 auto; color:#fff; font-size:10.5px; min-width:62px; text-align:right; font-family:var(--font-sans, sans-serif);">0:00 / 0:00</span>
+            <button id="ssIntroStop" type="button" aria-label="Stopp, zurück zum Logo" title="Stopp" style="flex:0 0 auto; width:30px; height:30px; display:flex; align-items:center; justify-content:center; border:0; border-radius:50%; background:#E1483C; color:#fff; cursor:pointer;">
+              <svg width="12" height="12" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" fill="currentColor"></rect></svg>
             </button>
           </div>
         </div>
@@ -3279,7 +3295,7 @@
   <a class="ss-promo__card" href="https://www.digistore24.com/redir/722628/moneyplantation/landingpage_magicpage_01" target="_blank" rel="sponsored noopener">
     <img class="ss-promo__img" src="assets/brand/magic-page-box.webp" alt="Magic Page KI">
     <div class="ss-promo__body">
-      <span class="ss-promo__eyebrow">Diese Seite wurde damit gebaut</span>
+      <span class="ss-promo__eyebrow">Beim Bau dieser Seite hat uns Magic Page KI unterstützt</span>
       <h3 class="ss-promo__title">Magic Page KI</h3>
       <p class="ss-promo__teaser">Nur ein kleiner Ausschnitt von dem, was damit möglich ist. Fahr drüber und schau's dir unverbindlich an — kostet nichts, verpflichtet zu nichts.</p>
       <p class="ss-promo__detail">Websites, Landingpages, ganze Funnel. Der Agent liest die Farben aus deinem Logo, wählt aus 73 Bausteinen, schreibt die Texte, holt die Bilder und prüft gegen 18 Punkte, bevor du die Seite siehst. Acht Referenzseiten stehen live im Netz. Kein Design-Auge nötig, keine Zeile Code.</p>
@@ -3551,6 +3567,10 @@
   var stopBtn = document.getElementById('ssIntroStop');
   var back10  = document.getElementById('ssIntroBack10');
   var fwd10   = document.getElementById('ssIntroFwd10');
+  var centerOverlay = document.getElementById('ssIntroCenterOverlay');
+  var centerPlayPauseBtn  = document.getElementById('ssIntroCenterPlayPause');
+  var centerPlayPauseIcon = document.getElementById('ssIntroCenterPlayPauseIcon');
+  var centerStopBtn = document.getElementById('ssIntroCenterStop');
   if(!wrap || !video) return;
 
   function fmt(t){
@@ -3591,8 +3611,40 @@
     e.stopPropagation();
     if (video.paused) { video.play(); } else { video.pause(); }
   });
-  video.addEventListener('play',  function(){ setPlayPauseIcon(true); });
-  video.addEventListener('pause', function(){ setPlayPauseIcon(false); });
+  video.addEventListener('play',  function(){ setPlayPauseIcon(true); setCenterPlayPauseIcon(true); });
+  video.addEventListener('pause', function(){ setPlayPauseIcon(false); setCenterPlayPauseIcon(false); });
+
+  // Grosse Play/Stopp-Schalter in der Videomitte -- nur bei Hover/Tap sichtbar,
+  // damit sie das Video im Normalfall nicht verdecken.
+  var centerHideTimer = null;
+  function showCenterOverlayTemporarily(){
+    videoBox.classList.add('controls-visible');
+    clearTimeout(centerHideTimer);
+    centerHideTimer = setTimeout(function(){ videoBox.classList.remove('controls-visible'); }, 3000);
+  }
+  function setCenterPlayPauseIcon(isPlaying){
+    if (!centerPlayPauseIcon) return;
+    centerPlayPauseIcon.innerHTML = isPlaying
+      ? '<rect x="6" y="5" width="4" height="14" fill="currentColor"></rect><rect x="14" y="5" width="4" height="14" fill="currentColor"></rect>'
+      : '<path d="M8 5v14l11-7z" fill="currentColor"></path>';
+  }
+  video.addEventListener('click', function(e){
+    e.stopPropagation();
+    showCenterOverlayTemporarily();
+  });
+  if (centerPlayPauseBtn){
+    centerPlayPauseBtn.addEventListener('click', function(e){
+      e.stopPropagation();
+      if (video.paused) { video.play(); } else { video.pause(); }
+      showCenterOverlayTemporarily();
+    });
+  }
+  if (centerStopBtn){
+    centerStopBtn.addEventListener('click', function(e){
+      e.stopPropagation();
+      backToLogo();
+    });
+  }
 
   // 10 Sekunden vor / zurueck -- Wiedergabeposition bleibt sonst unveraendert
   back10.addEventListener('click', function(e){
