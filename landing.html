@@ -7,7 +7,13 @@
   <title>SeemannSonic Audiolabs</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=Inter:wght@200;300;400;500;600;700&display=swap">
+  <!-- Nicht render-blockierend laden: die Google-Fonts-CSS haelt sonst den kompletten
+       ersten Seitenaufbau auf (u.a. den Header-Schriftzug, der laut PageSpeed das LCP-
+       Element ist). font-display:swap sorgt dafuer, dass sofort mit einer Fallback-
+       Schrift gerendert wird, sobald die Schrift da ist, wird sie eingetauscht. -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=Inter:wght@200;300;400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=Inter:wght@200;300;400;500;600;700&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=Inter:wght@200;300;400;500;600;700&display=swap"></noscript>
   <style>
     *{margin:0;box-sizing:border-box}
     :root{ --color-ink:#08111F; --color-ink-2:#0B1E3D; --color-panel:#0B1E3D; --color-panel-2:#13294a; --color-line:rgb(185 196 208 / 0.12); --color-line-2:rgb(185 196 208 / 0.2); --color-fg:#F2F6FB; --color-fg-2:#B9C4D0; --color-fg-3:#8b96a8; --color-brand:#0F6BFF; --color-brand-bright:#3D8BFF; --color-accent:#00B7FF; --color-accent-bright:#33c5ff; --color-silver:#B9C4D0; --color-chrome:#F2F6FB; --radius:0.625rem; --color-on-brand:#FFFFFF; --font-display:'Space Grotesk', sans-serif; --font-sans:'Inter', ui-sans-serif, system-ui, sans-serif;  }
@@ -176,7 +182,7 @@
 
   <div class="offer-nav__inner">
     <a class="offer-nav__brand ss-mark" href="#top" aria-label="SeemannSonic Audiolabs, Startseite">
-      <img src="assets/brand/logo-icon.webp" alt="" width="32" height="32" style="border-radius:50%;display:block;">
+      <img src="assets/brand/logo-icon-32.webp" alt="" width="32" height="32" style="border-radius:50%;display:block;">
       <span class="offer-nav__wordmark-group">
         <span class="offer-nav__wordmark notranslate" translate="no"><em>Seemann</em><span>S</span><em>onic</em></span>
         <span class="offer-nav__wordmark-sub">AUDIOLABS</span>
@@ -358,8 +364,16 @@
     .edhero__mobile-reveal{ display:none; }
     @media (max-width:640px){
       .edhero__word-reveal{ display:none !important; }
+      /* Titel-Abstand nach unten war fuer die alte Pro-Wort-Positionierung gedacht
+         (92px, damit die Reveal-Texte darunter Platz haben). Auf Mobile brauchen wir
+         das nicht mehr -- Zeile ruecken naeher an den Titel, Abstand kommt stattdessen
+         gezielt unter der Zeile selbst (siehe margin unten), damit klarer Freiraum
+         zum Fliesstext entsteht statt fast daran zu kleben. */
+      .edhero__title{ margin-bottom:6px; }
       .edhero__mobile-reveal{
-        display:block; text-align:center; margin:16px 0 0; padding:0 10px;
+        display:flex; align-items:center; justify-content:center;
+        width:100%; min-height:44px; box-sizing:border-box;
+        text-align:center; margin:0 0 26px; padding:8px 14px;
         font-family:var(--font-display); font-weight:700; font-style:italic;
         font-size:clamp(17px,4.8vw,21px); line-height:1.4; letter-spacing:-.005em;
         color:var(--color-accent-bright); max-width:100%; white-space:normal;
@@ -496,14 +510,14 @@
         <a class="edhero__ghost" href="#so-gehts">So funktioniert's</a>
       </div>
       <div class="edhero__proof">
-        <div class="edhero__faces" aria-hidden="true"><img src="assets/brand/avatar-a.webp" alt=""><img src="assets/brand/avatar-j.webp" alt=""><img src="assets/brand/avatar-m.webp" alt=""></div>
+        <div class="edhero__faces" aria-hidden="true"><img src="assets/brand/avatar-a.webp" alt="" width="36" height="36"><img src="assets/brand/avatar-j.webp" alt="" width="36" height="36"><img src="assets/brand/avatar-m.webp" alt="" width="36" height="36"></div>
         <small><b>Im Aufbau, sei von Anfang an dabei</b><br>"Schön, dass du da bist."</small>
       </div>
     </div>
 
     <div class="edhero__visual">
       <div class="edhero__photo" id="ssIntroPlayer" style="cursor:pointer;">
-        <img src="assets/brand/logo-icon.webp" alt="SeemannSonic Audiolabs Logo" loading="eager" decoding="async" id="ssIntroPoster">
+        <img src="assets/brand/logo-icon.webp" alt="SeemannSonic Audiolabs Logo" loading="eager" decoding="async" id="ssIntroPoster" width="560" height="560">
 
         <div id="ssIntroVideoBox" style="display:none; aspect-ratio:16/9; background:#000; border-radius:14px; overflow:hidden; box-shadow:0 24px 60px rgba(0,0,0,.55); z-index:3;">
           <button id="ssIntroClose" type="button" aria-label="Video schliessen" style="position:absolute; top:8px; right:8px; z-index:2; width:28px; height:28px; border:0; border-radius:50%; background:rgba(0,0,0,.6); color:#fff; font-size:16px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center;">&times;</button>
@@ -525,6 +539,12 @@
             #ssIntroVideoBox.controls-visible #ssIntroCenterOverlay{ opacity:1; pointer-events:auto; }
             #ssIntroCenterOverlay button{ transition:transform .15s ease; }
             #ssIntroCenterOverlay button:hover{ transform:scale(1.07); }
+            /* Handy + Tablet (kein echtes Hover): Mitte-Buttons komplett weg, Steuerung
+               laeuft dort ausschliesslich ueber die untere Leiste (#ssIntroControls).
+               Desktop (hover:hover) bleibt unveraendert. */
+            @media (hover:none){
+              #ssIntroCenterOverlay{ display:none !important; }
+            }
           </style>
 
           <div id="ssIntroControls" style="position:absolute; left:0; right:0; bottom:0; display:flex; align-items:center; gap:6px; padding:9px 10px; background:linear-gradient(to top, rgba(0,0,0,.85), rgba(0,0,0,0)); flex-wrap:nowrap;">
@@ -1593,22 +1613,22 @@
           <div class="ss-tilecard" style="width:100%;max-width:560px;border-radius:18px;background:var(--color-panel);border:1px solid var(--color-line);padding:20px;box-shadow:0 30px 60px -30px rgb(0 0 0 / .5);">
             <div class="ss-tilegrid" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
               <a href="#mod-fokus" class="ss-tile" style="position:relative;border-radius:14px;overflow:hidden;color:#fff;font-weight:700;font-size:17px;min-height:130px;display:flex;align-items:flex-end;padding:16px 18px;text-decoration:none;">
-                <img src="assets/brand/fokus.webp" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:44% center;z-index:0;">
+                <img src="assets/brand/fokus.webp" alt="" width="600" height="338" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:44% center;z-index:0;">
                 <span style="position:absolute;inset:0;background:linear-gradient(180deg,transparent 30%,rgb(0 0 0 / .65));z-index:1;"></span>
                 <span style="position:relative;z-index:2;">Focus</span>
               </a>
               <a href="#mod-schlaf" class="ss-tile" style="position:relative;border-radius:14px;overflow:hidden;color:#fff;font-weight:700;font-size:17px;min-height:130px;display:flex;align-items:flex-end;padding:16px 18px;text-decoration:none;">
-                <img src="assets/brand/sleep.webp" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:46% center;z-index:0;">
+                <img src="assets/brand/sleep.webp" alt="" width="600" height="338" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:46% center;z-index:0;">
                 <span style="position:absolute;inset:0;background:linear-gradient(180deg,transparent 30%,rgb(0 0 0 / .65));z-index:1;"></span>
                 <span style="position:relative;z-index:2;">Sleep</span>
               </a>
               <a href="#mod-entspannung" class="ss-tile" style="position:relative;border-radius:14px;overflow:hidden;color:#fff;font-weight:700;font-size:17px;min-height:130px;display:flex;align-items:flex-end;padding:16px 18px;text-decoration:none;">
-                <img src="assets/brand/relax.webp" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;">
+                <img src="assets/brand/relax.webp" alt="" width="600" height="338" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;">
                 <span style="position:absolute;inset:0;background:linear-gradient(180deg,transparent 30%,rgb(0 0 0 / .65));z-index:1;"></span>
                 <span style="position:relative;z-index:2;">Relax</span>
               </a>
               <a href="#mod-balance" class="ss-tile" style="position:relative;border-radius:14px;overflow:hidden;color:#fff;font-weight:700;font-size:17px;min-height:130px;display:flex;align-items:flex-end;padding:16px 18px;text-decoration:none;">
-                <img src="assets/brand/balance.webp" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:36% center;z-index:0;">
+                <img src="assets/brand/balance.webp" alt="" width="600" height="338" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:36% center;z-index:0;">
                 <span style="position:absolute;inset:0;background:linear-gradient(180deg,transparent 30%,rgb(0 0 0 / .65));z-index:1;"></span>
                 <span style="position:relative;z-index:2;">Balance</span>
               </a>
@@ -1707,7 +1727,7 @@
   </style>
 
   <div class="ss-idea__bg">
-    <img src="assets/brand/studio-scene.webp" alt="SeemannSonic Studio bei Nacht mit Mischpulten, Mikrofon und Klangwelle" loading="lazy" decoding="async">
+    <img src="assets/brand/studio-scene.webp" alt="SeemannSonic Studio bei Nacht mit Mischpulten, Mikrofon und Klangwelle" loading="lazy" decoding="async" width="1200" height="1200">
   </div>
   <div class="ss-idea__scrim"></div>
 
@@ -2271,7 +2291,7 @@
   </style>
   <div>
     <div class="ss-showcase__frame">
-      <img src="assets/brand/community-banner.webp" alt="Willkommensbeitrag der SeemannSonic Audiolabs Community mit den Bereichen Focus, Sleep, Relax und Balance" loading="lazy" decoding="async">
+      <img src="assets/brand/community-banner.webp" alt="Willkommensbeitrag der SeemannSonic Audiolabs Community mit den Bereichen Focus, Sleep, Relax und Balance" loading="lazy" decoding="async" width="1600" height="346">
     </div>
     <p class="ss-showcase__cap">Ein echter Blick in die Community, direkt aus der Mediathek.</p>
   </div>
@@ -3328,7 +3348,7 @@
     }
   </style>
   <a class="ss-promo__card" href="https://www.digistore24.com/redir/722628/moneyplantation/landingpage_magicpage_01" target="_blank" rel="sponsored noopener">
-    <img class="ss-promo__img" src="assets/brand/magic-page-box.webp" alt="Magic Page KI">
+    <img class="ss-promo__img" src="assets/brand/magic-page-box.webp" alt="Magic Page KI" width="186" height="216" loading="lazy" decoding="async">
     <div class="ss-promo__body">
       <span class="ss-promo__eyebrow">Beim Bau dieser Seite hat uns Magic Page KI unterstützt</span>
       <h3 class="ss-promo__title">Magic Page KI</h3>
@@ -3650,24 +3670,17 @@
   video.addEventListener('pause', function(){ setPlayPauseIcon(false); setCenterPlayPauseIcon(false); });
 
   // Grosse Play/Stopp-Schalter in der Videomitte -- nur bei Hover/Tap sichtbar,
-  // damit sie das Video im Normalfall nicht verdecken.
-  // Auf Touch-Geraeten (kein echtes Hover): Tipp aufs Video schaltet direkt Play/Pause.
-  // Sichtbarkeit folgt dabei dem Pause-Zustand -- sichtbar wenn pausiert, weg wenn es
-  // laeuft. Kein Zwangstimer, aber auch nicht dauerhaft im Bild. Desktop-Verhalten
-  // (Hover + 3-Sek.-Timer) bleibt unveraendert.
+  // damit sie das Video im Normalfall nicht verdecken. Existieren nur auf Desktop
+  // (siehe @media (hover:none) oben, die sie fuer Handy+Tablet komplett ausblendet).
+  // Auf Touch-Geraeten schaltet ein Tipp aufs Video direkt Play/Pause, ohne Overlay --
+  // die eigentliche Steuerung laeuft dort ueber die untere Leiste.
   var isTouch = window.matchMedia('(hover: none)').matches;
   var centerHideTimer = null;
   function showCenterOverlayTemporarily(){
-    videoBox.classList.add('controls-visible');
     if (isTouch) return;
+    videoBox.classList.add('controls-visible');
     clearTimeout(centerHideTimer);
     centerHideTimer = setTimeout(function(){ videoBox.classList.remove('controls-visible'); }, 3000);
-  }
-  function syncCenterOverlayToPauseState(){
-    if (!isTouch) return;
-    clearTimeout(centerHideTimer);
-    if (video.paused) videoBox.classList.add('controls-visible');
-    else videoBox.classList.remove('controls-visible');
   }
   function setCenterPlayPauseIcon(isPlaying){
     if (!centerPlayPauseIcon) return;
@@ -3675,8 +3688,6 @@
       ? '<rect x="6" y="5" width="4" height="14" fill="currentColor"></rect><rect x="14" y="5" width="4" height="14" fill="currentColor"></rect>'
       : '<path d="M8 5v14l11-7z" fill="currentColor"></path>';
   }
-  video.addEventListener('play',  syncCenterOverlayToPauseState);
-  video.addEventListener('pause', syncCenterOverlayToPauseState);
   video.addEventListener('click', function(e){
     e.stopPropagation();
     if (isTouch){
@@ -3689,7 +3700,7 @@
     centerPlayPauseBtn.addEventListener('click', function(e){
       e.stopPropagation();
       if (video.paused) { video.play(); } else { video.pause(); }
-      if (!isTouch) showCenterOverlayTemporarily();
+      showCenterOverlayTemporarily();
     });
   }
   if (centerStopBtn){
