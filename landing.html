@@ -353,16 +353,19 @@
     .edhero__word-reveal--r{ right:0; top:100%; margin-top:24px; text-align:right; transform:translate(8px, calc(-4px + var(--clampy,0px))); }
     .edhero__word:hover .edhero__word-reveal--r, .edhero__word.is-open .edhero__word-reveal--r{ transform:translate(20px, var(--clampy,0px)); }
 
+    /* Mobile: ersetzt die pro-Wort positionierten Reveal-Texte durch eine feste,
+       zentrierte Zeile -- kann durch Umbruch nie horizontal ueberlaufen. */
+    .edhero__mobile-reveal{ display:none; }
     @media (max-width:640px){
-      .edhero__word-reveal{ font-size:21px; }
-      .edhero__word-reveal--tl{ left:0; right:auto; bottom:100%; margin-bottom:8px; text-align:left; transform:translate(0, calc(4px + var(--clampy,0px))); }
-      .edhero__word:hover .edhero__word-reveal--tl, .edhero__word.is-open .edhero__word-reveal--tl{ transform:translate(0, var(--clampy,0px)); }
-      .edhero__word-reveal--tr{ left:50%; right:auto; bottom:100%; margin-bottom:8px; text-align:center; transform:translate(calc(-50% + var(--clampx,0px)), calc(4px + var(--clampy,0px))); }
-      .edhero__word:hover .edhero__word-reveal--tr, .edhero__word.is-open .edhero__word-reveal--tr{ transform:translate(calc(-50% + var(--clampx,0px)), var(--clampy,0px)); }
-      .edhero__word-reveal--bl{ left:0; right:auto; top:100%; margin-top:8px; text-align:left; transform:translate(0, calc(-4px + var(--clampy,0px))); }
-      .edhero__word:hover .edhero__word-reveal--bl, .edhero__word.is-open .edhero__word-reveal--bl{ transform:translate(0, var(--clampy,0px)); }
-      .edhero__word-reveal--r{ left:50%; top:100%; margin-left:0; margin-top:24px; text-align:center; transform:translate(calc(-50% + var(--clampx,0px)), calc(-4px + var(--clampy,0px))); }
-      .edhero__word:hover .edhero__word-reveal--r, .edhero__word.is-open .edhero__word-reveal--r{ transform:translate(calc(-50% + var(--clampx,0px)), var(--clampy,0px)); }
+      .edhero__word-reveal{ display:none !important; }
+      .edhero__mobile-reveal{
+        display:block; text-align:center; margin:16px 0 0; padding:0 10px;
+        font-family:var(--font-display); font-weight:700; font-style:italic;
+        font-size:clamp(17px,4.8vw,21px); line-height:1.4; letter-spacing:-.005em;
+        color:var(--color-accent-bright); max-width:100%; white-space:normal;
+        cursor:pointer; opacity:0; pointer-events:none; transition:opacity .2s ease;
+      }
+      .edhero__mobile-reveal.is-visible{ opacity:1; pointer-events:auto; }
     }
 
     /* ---- Mouse-follow glow, confined to hero ---- */
@@ -404,10 +407,10 @@
       display:flex; align-items:center; gap:14px; margin-top:34px;
       animation:edhero-up .7s .32s cubic-bezier(.2,.7,.2,1) both;
     }
-    .edhero__faces{ display:flex; }
+    .edhero__faces{ display:flex; flex-shrink:0; }
     .edhero__faces img{
       width:36px; height:36px; border-radius:50%; border:2px solid var(--color-ink);
-      object-fit:cover; display:block;
+      object-fit:cover; display:block; flex-shrink:0;
       margin-left:-8px;
     }
     .edhero__faces img:first-child{ margin-left:0; }
@@ -464,13 +467,13 @@
       .edhero__card--tl{ top:-10px; left:-30px; }
       .edhero__card--br{ bottom:-10px; right:-30px; }
       .edhero__card{ background:rgb(8 17 31 / .78); backdrop-filter:blur(6px); box-shadow:0 8px 20px -4px rgb(0 0 0 / .5); }
+      #ssIntroVideoBox{ left:50%; width:min(92vw, 480px); max-width:min(92vw, 480px); }
     }
     @media (max-width:600px){
       .edhero{ padding:56px 18px 64px; }
       .edhero__card{ padding:11px 14px; }
       .edhero__card--tl{ top:14px; left:8px; }
       .edhero__card--br{ bottom:14px; right:8px; }
-      #ssIntroVideoBox{ left:50%; width:92vw; max-width:92vw; }
     }
     @media (max-width:420px){
       .edhero__title{ font-size:clamp(36px,10.6vw,76px); }
@@ -485,6 +488,7 @@
     <div class="edhero__copy">
       <span class="edhero__kick"><i></i>Funktionsmusik-Community</span>
       <h1 class="edhero__title"><span class="edhero__word" data-pos="tl">Musik,<span class="edhero__word-reveal edhero__word-reveal--tl" aria-hidden="true">Für besseren Schlaf.</span></span> <span class="edhero__word" data-pos="tr">die wirkt,<span class="edhero__word-reveal edhero__word-reveal--tr" aria-hidden="true">Für mehr Konzentration.</span></span> <span class="edhero__word" data-pos="bl">für<span class="edhero__word-reveal edhero__word-reveal--bl" aria-hidden="true">Für tiefe Entspannung.</span></span> <em class="edhero__word" data-pos="r">deinen Kopf.<svg viewBox="0 0 120 12" preserveAspectRatio="none" aria-hidden="true"><path d="M2 9 C 30 3, 60 3, 118 7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg><span class="edhero__word-reveal edhero__word-reveal--r" aria-hidden="true">Für mehr innere Balance.</span></em><span class="edhero__tap-hint" aria-hidden="true"><span class="edhero__tap-tip">Fahre über den Text – dann klick mich</span><span class="edhero__tap-dot"></span><span class="edhero__tap-ring"></span><span class="edhero__tap-ring edhero__tap-ring--2"></span></span></h1>
+      <p class="edhero__mobile-reveal" data-mobile-reveal aria-hidden="true"></p>
       <p class="edhero__lead">SeemannSonic Audiolabs ist eine wachsende Community rund um Funktionsmusik: Sounds, die dir helfen, dich zu fokussieren, runterzukommen oder einzuschlafen. Kostenlos, ohne Abo.</p>
       <div class="edhero__ctas">
         <a class="edhero__btn" href="https://seemannsonic.flenski.app/ss/communities/" target="_blank" rel="noopener">Kostenlos beitreten<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -634,13 +638,39 @@
       });
     }
 
-    words.forEach(function(w){
+    // Mobile: feste, zentrierte Reveal-Zeile statt Positionierung pro Wort.
+    var mobileReveal = root.querySelector('[data-mobile-reveal]');
+    var MOBILE_MESSAGES = words.map(function(w){
+      var r = w.querySelector('.edhero__word-reveal');
+      return r ? r.textContent : '';
+    });
+    var mobileIdx = 0;
+    if (mobileReveal){
+      mobileReveal.addEventListener('click', function(e){
+        e.stopPropagation();
+        mobileIdx = (mobileIdx + 1) % MOBILE_MESSAGES.length;
+        mobileReveal.textContent = MOBILE_MESSAGES[mobileIdx];
+        mobileReveal.classList.add('is-visible');
+      });
+    }
+
+    words.forEach(function(w, wIdx){
       w.addEventListener('click', function(e){
         e.stopPropagation();
         markEngaged();
         var wasOpen = w.classList.contains('is-open');
         words.forEach(function(o){ o.classList.remove('is-open'); });
-        if (!wasOpen){ w.classList.add('is-open'); clampReveal(w); }
+        if (!wasOpen){
+          w.classList.add('is-open');
+          clampReveal(w);
+          if (mobileReveal){
+            mobileIdx = wIdx;
+            mobileReveal.textContent = MOBILE_MESSAGES[wIdx];
+            mobileReveal.classList.add('is-visible');
+          }
+        } else if (mobileReveal){
+          mobileReveal.classList.remove('is-visible');
+        }
       });
       w.addEventListener('mouseenter', function(){
         clampReveal(w);
@@ -656,6 +686,7 @@
     });
     document.addEventListener('click', function(){
       words.forEach(function(o){ o.classList.remove('is-open'); });
+      if (mobileReveal) mobileReveal.classList.remove('is-visible');
     });
 
     if (glow && !reduced){
@@ -3608,7 +3639,6 @@
     e.stopPropagation();
     showVideo();
     video.play();
-    if (window.matchMedia('(hover: none)').matches) showCenterOverlayTemporarily();
   });
 
   // Play/Pause in der Steuerleiste -- setzt NICHT auf 0 zurueck
@@ -3621,9 +3651,10 @@
 
   // Grosse Play/Stopp-Schalter in der Videomitte -- nur bei Hover/Tap sichtbar,
   // damit sie das Video im Normalfall nicht verdecken.
-  // Auf Touch-Geraeten (kein echtes Hover): Tipp aufs Video schaltet direkt Play/Pause,
-  // und die Schalter bleiben dauerhaft sichtbar (kein 3-Sek.-Timer) -- Desktop-Verhalten
-  // bleibt unveraendert.
+  // Auf Touch-Geraeten (kein echtes Hover): Tipp aufs Video schaltet direkt Play/Pause.
+  // Sichtbarkeit folgt dabei dem Pause-Zustand -- sichtbar wenn pausiert, weg wenn es
+  // laeuft. Kein Zwangstimer, aber auch nicht dauerhaft im Bild. Desktop-Verhalten
+  // (Hover + 3-Sek.-Timer) bleibt unveraendert.
   var isTouch = window.matchMedia('(hover: none)').matches;
   var centerHideTimer = null;
   function showCenterOverlayTemporarily(){
@@ -3632,24 +3663,33 @@
     clearTimeout(centerHideTimer);
     centerHideTimer = setTimeout(function(){ videoBox.classList.remove('controls-visible'); }, 3000);
   }
+  function syncCenterOverlayToPauseState(){
+    if (!isTouch) return;
+    clearTimeout(centerHideTimer);
+    if (video.paused) videoBox.classList.add('controls-visible');
+    else videoBox.classList.remove('controls-visible');
+  }
   function setCenterPlayPauseIcon(isPlaying){
     if (!centerPlayPauseIcon) return;
     centerPlayPauseIcon.innerHTML = isPlaying
       ? '<rect x="6" y="5" width="4" height="14" fill="currentColor"></rect><rect x="14" y="5" width="4" height="14" fill="currentColor"></rect>'
       : '<path d="M8 5v14l11-7z" fill="currentColor"></path>';
   }
+  video.addEventListener('play',  syncCenterOverlayToPauseState);
+  video.addEventListener('pause', syncCenterOverlayToPauseState);
   video.addEventListener('click', function(e){
     e.stopPropagation();
     if (isTouch){
       if (video.paused) { video.play(); } else { video.pause(); }
+    } else {
+      showCenterOverlayTemporarily();
     }
-    showCenterOverlayTemporarily();
   });
   if (centerPlayPauseBtn){
     centerPlayPauseBtn.addEventListener('click', function(e){
       e.stopPropagation();
       if (video.paused) { video.play(); } else { video.pause(); }
-      showCenterOverlayTemporarily();
+      if (!isTouch) showCenterOverlayTemporarily();
     });
   }
   if (centerStopBtn){
