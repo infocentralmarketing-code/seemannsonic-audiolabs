@@ -288,6 +288,12 @@
       animation:edhero-up .7s cubic-bezier(.2,.7,.2,1) both;
     }
     .edhero__kick i{ width:7px; height:7px; border-radius:50%; background:var(--color-brand); }
+    /* Kleiner Klick-Hinweis-Pfeil, gleicher Stil wie bei "4 Bereiche"/Footer/Karten. */
+    .edhero__kick-arrow{
+      font-size:.85em; line-height:1; color:var(--color-brand);
+      opacity:.6; transition:transform .2s ease, opacity .2s ease;
+    }
+    .edhero__kick:hover .edhero__kick-arrow{ transform:translateX(3px); opacity:1; }
     .edhero__title{
       position:relative;
       font-family:var(--font-display); font-weight:800;
@@ -460,9 +466,15 @@
     .edhero__photo{
       width:100%; aspect-ratio:4/4.6; position:relative;
       display:flex; align-items:center; justify-content:center;
+      -webkit-tap-highlight-color:transparent;
     }
     .edhero__photo img{ width:88%; height:88%; object-fit:contain; display:block; margin:auto; filter:drop-shadow(0 30px 60px rgb(0 0 0 / .6)); }
-    #ssIntroVideoBox{ position:absolute; left:62%; top:50%; transform:translate(-50%,-50%); width:min(145%, 94vw); max-width:720px; }
+    /* Tap-Highlight auch hier unterdruecken -- das Video-Feld selbst (nicht nur
+       die einzelnen Buttons) hatte noch keins, dadurch blitzte beim Antippen des
+       Videos (Play/Pause-Toggle auf Touch) und beim Oeffnen ein blaues Rechteck
+       auf bzw. "flackerte" bei mehrfachem Antippen. */
+    #ssIntroVideoBox{ position:absolute; left:62%; top:50%; transform:translate(-50%,-50%); width:min(145%, 94vw); max-width:720px; -webkit-tap-highlight-color:transparent; }
+    #ssIntroVideoBox video{ -webkit-tap-highlight-color:transparent; }
     #ssIntroBack10, #ssIntroFwd10, #ssIntroStop{ width:30px; height:30px; }
     #ssIntroPlayPause{ width:32px; height:32px; }
     .edhero__sonar{ animation:edhero-sonar 4.5s ease-out infinite; transform-origin:center; }
@@ -506,8 +518,13 @@
        fuer breite Desktop-Fenster gedacht und ragt auf Tablet-Breiten ueber den
        rechten Rand hinaus. Steuerungstasten hier zusaetzlich etwas groesser
        (leichter zu treffen), und der Logo-Glow etwas kraeftiger. Echter Desktop
-       (>1300px) bleibt unveraendert bei 145%. */
-    @media (min-width:1001px) and (max-width:1300px){
+       (Maus, hover:hover) bleibt unveraendert bei 145%.
+       Bewusst NICHT mehr auf eine feste Pixel-Obergrenze (vorher max-width:1300px)
+       begrenzt -- das griff auf echten Tablets mit anderer Breite/Ausrichtung gar
+       nicht. Stattdessen wie beim Video-Overlay/Vanta-Fix per hover:none erkannt:
+       greift dann auf jedem Touch-Geraet ab 1001px, unabhaengig von der genauen
+       Breite oder Ausrichtung. */
+    @media (hover:none) and (min-width:1001px){
       /* Box exakt auf die Groesse/Position des Logo-Containers begrenzen (statt
          darueber hinaus zu "bluten" wie auf echtem Desktop) -- so bleibt sie
          garantiert innerhalb der Grid-Spalte und kann den Viewport-Rand nie
@@ -567,7 +584,7 @@
 
   <div class="edhero__inner">
     <div class="edhero__copy">
-      <span class="edhero__kick"><i></i>Funktionsmusik-Community</span>
+      <span class="edhero__kick"><i></i>Funktionsmusik-Community<span class="edhero__kick-arrow" aria-hidden="true">&#8594;</span></span>
       <h1 class="edhero__title"><span class="edhero__word" data-pos="tl">Musik,<span class="edhero__word-reveal edhero__word-reveal--tl" aria-hidden="true">Für besseren Schlaf.</span></span> <span class="edhero__word" data-pos="tr">die wirkt,<span class="edhero__word-reveal edhero__word-reveal--tr" aria-hidden="true">Für mehr Konzentration.</span></span> <span class="edhero__word" data-pos="bl">für<span class="edhero__word-reveal edhero__word-reveal--bl" aria-hidden="true">Für tiefe Entspannung.</span></span> <em class="edhero__word" data-pos="r">deinen Kopf.<svg viewBox="0 0 120 12" preserveAspectRatio="none" aria-hidden="true"><path d="M2 9 C 30 3, 60 3, 118 7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg><span class="edhero__word-reveal edhero__word-reveal--r" aria-hidden="true">Für mehr innere Balance.</span></em><span class="edhero__tap-hint" aria-hidden="true"><span class="edhero__tap-tip">Fahre über den Text – dann klick mich</span><span class="edhero__tap-dot"></span><span class="edhero__tap-ring"></span><span class="edhero__tap-ring edhero__tap-ring--2"></span></span></h1>
       <p class="edhero__mobile-reveal" data-mobile-reveal aria-hidden="true"></p>
       <p class="edhero__lead">SeemannSonic Audiolabs ist eine wachsende Community rund um Funktionsmusik: Sounds, die dir helfen, dich zu fokussieren, runterzukommen oder einzuschlafen. Kostenlos, ohne Abo.</p>
@@ -587,7 +604,7 @@
         <img src="assets/brand/logo-icon.webp" alt="SeemannSonic Audiolabs Logo" loading="eager" decoding="async" id="ssIntroPoster" width="560" height="560">
 
         <div id="ssIntroVideoBox" style="display:none; aspect-ratio:16/9; background:#000; border-radius:14px; overflow:hidden; box-shadow:0 24px 60px rgba(0,0,0,.55); z-index:3;">
-          <button id="ssIntroClose" type="button" aria-label="Video schliessen" style="position:absolute; top:8px; right:8px; z-index:2; width:28px; height:28px; border:0; border-radius:50%; background:rgba(0,0,0,.6); color:#fff; font-size:16px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center;">&times;</button>
+          <button id="ssIntroClose" type="button" aria-label="Video schliessen" style="position:absolute; top:8px; right:8px; z-index:2; width:28px; height:28px; border:0; border-radius:50%; background:rgba(0,0,0,.6); color:#fff; font-size:16px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; -webkit-tap-highlight-color:transparent;">&times;</button>
           <video id="ssIntroVideo" playsinline preload="none" style="width:100%; height:100%; object-fit:contain; background:#000; display:block;">
             <source src="assets/video/intro.mp4" type="video/mp4">
           </video>
