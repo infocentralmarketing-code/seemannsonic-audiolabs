@@ -10,10 +10,14 @@
   <!-- Nicht render-blockierend laden: die Google-Fonts-CSS haelt sonst den kompletten
        ersten Seitenaufbau auf (u.a. den Header-Schriftzug, der laut PageSpeed das LCP-
        Element ist). font-display:swap sorgt dafuer, dass sofort mit einer Fallback-
-       Schrift gerendert wird, sobald die Schrift da ist, wird sie eingetauscht. -->
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=Inter:wght@200;300;400;500;600;700&display=swap">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=Inter:wght@200;300;400;500;600;700&display=swap" media="print" onload="this.media='all'">
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=Inter:wght@200;300;400;500;600;700&display=swap"></noscript>
+       Schrift gerendert wird, sobald die Schrift da ist, wird sie eingetauscht.
+       Caveat ist hier mit reingezogen (vorher ein zweiter, separat blockierender
+       @import weiter unten im "Ehrlich gesagt"-Bereich -- laut PageSpeed-
+       Netzwerk-Kette der naechste Flaschenhals: eigene CSS-Anfrage + eigene
+       Font-Datei, beide noch render-blockierend). -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=Inter:wght@200;300;400;500;600;700&family=Caveat:wght@600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=Inter:wght@200;300;400;500;600;700&family=Caveat:wght@600;700&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=Inter:wght@200;300;400;500;600;700&family=Caveat:wght@600;700&display=swap"></noscript>
   <style>
     *{margin:0;box-sizing:border-box}
     :root{ --color-ink:#08111F; --color-ink-2:#0B1E3D; --color-panel:#0B1E3D; --color-panel-2:#13294a; --color-line:rgb(185 196 208 / 0.12); --color-line-2:rgb(185 196 208 / 0.2); --color-fg:#F2F6FB; --color-fg-2:#B9C4D0; --color-fg-3:#8b96a8; --color-brand:#0F6BFF; --color-brand-bright:#3D8BFF; --color-accent:#00B7FF; --color-accent-bright:#33c5ff; --color-silver:#B9C4D0; --color-chrome:#F2F6FB; --radius:0.625rem; --color-on-brand:#FFFFFF; --font-display:'Space Grotesk', sans-serif; --font-sans:'Inter', ui-sans-serif, system-ui, sans-serif;  }
@@ -373,10 +377,18 @@
     /* Mobile: ersetzt die pro-Wort positionierten Reveal-Texte durch eine feste,
        zentrierte Zeile -- kann durch Umbruch nie horizontal ueberlaufen. */
     .edhero__mobile-reveal{ display:none; }
-    @media (max-width:640px){
+    /* Bis 1300px (Handy UND Tablet, Hoch- wie Querformat): robustes, zentriertes
+       Tipp-System statt der alten Pro-Wort-Positionierung. Vorher galt das nur bis
+       640px -- im Luecken-Bereich 641-1000px (z.B. Tablet im Hochformat) lief noch
+       das alte System weiter, obwohl das Layout dort schon einspaltig/mobil ist.
+       Dadurch reagierte ein Tipp auf den schwebenden Reveal-Text dort auf gar nichts
+       (das Element hat pointer-events:none, ein Tipp ging ins Leere). Echter Desktop
+       (>1300px, wo das 2-spaltige Layout mit viel Platz greift) bleibt unveraendert
+       beim Hover-basierten Pro-Wort-System. */
+    @media (max-width:1300px){
       .edhero__word-reveal{ display:none !important; }
       /* Titel-Abstand nach unten war fuer die alte Pro-Wort-Positionierung gedacht
-         (92px, damit die Reveal-Texte darunter Platz haben). Auf Mobile brauchen wir
+         (92px, damit die Reveal-Texte darunter Platz haben). Hier brauchen wir
          das nicht mehr -- Zeile ruecken naeher an den Titel, Abstand kommt stattdessen
          gezielt unter der Zeile selbst (siehe margin unten), damit klarer Freiraum
          zum Fliesstext entsteht statt fast daran zu kleben. */
@@ -506,11 +518,26 @@
       #ssIntroBack10 svg, #ssIntroFwd10 svg{ width:18px; height:18px; }
       #ssIntroStop svg{ width:15px; height:15px; }
       #ssIntroPlayPauseIcon{ width:16px; height:16px; }
-      .edhero__photo img{
-        filter:
-          drop-shadow(0 0 46px rgba(61,139,255,.55))
-          drop-shadow(0 0 90px rgba(0,183,255,.3))
-          drop-shadow(0 30px 60px rgb(0 0 0 / .6));
+      /* Eigenstaendiger Glow-Halo HINTER dem Icon statt mehrerer verketteter
+         drop-shadow()-Filter auf dem Bild selbst -- verkettete Filter werden
+         nacheinander auf das Ergebnis des vorherigen angewandt und daempfen sich
+         dadurch gegenseitig, statt sich zu einem kraeftigen Leuchten zu addieren.
+         ::before liegt automatisch hinter dem <img> (das keine eigene position
+         hat), braucht daher kein z-index-Gefrickel. */
+      .edhero__photo{ position:relative; }
+      .edhero__photo::before{
+        content:''; position:absolute; inset:-16%; pointer-events:none;
+        background:radial-gradient(circle at center,
+          rgba(61,139,255,.65) 0%, rgba(0,183,255,.4) 32%, transparent 68%);
+        filter:blur(32px);
+      }
+      /* Ambientes Mausleuchten (sonst nur per :hover, existiert auf Touch nie)
+         hier dauerhaft aktiv und kraeftiger -- macht den ganzen Hero-Bereich
+         farbiger/lebendiger, nicht nur einen Ring ums Icon. */
+      .edhero__mouseglow{
+        opacity:1 !important;
+        background:radial-gradient(420px circle at var(--mx,50%) var(--my,20%),
+          color-mix(in srgb, var(--mode-color, var(--color-brand)) 32%, transparent), transparent 72%);
       }
     }
 
@@ -796,9 +823,8 @@
 <!-- problem/notes-wall-01 -->
 <section class="pwnotes" aria-label="The hidden jobs problem">
   <style>
-    
-    @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&display=swap');
-    
+    /* Caveat wird jetzt zentral im <head> mitgeladen (nicht mehr render-blockierend
+       per @import hier) -- siehe Kommentar dort. */
     .pwnotes{
       /* physical paper prop palette (component-local, themable) */
       --pw-paper:#F4EFE2; --pw-paper-ink:#26251F; --pw-paper-sub:#6A685C; --pw-hand:'Caveat',cursive;
@@ -850,6 +876,13 @@
     .pwnotes__note:nth-child(5){ animation-delay:.52s } .pwnotes__note:nth-child(6){ animation-delay:.60s }
     .pwnotes__note:nth-child(7){ animation-delay:.68s }
     .pwnotes__note:hover{ transform:rotate(0deg) translateY(-20px) scale(1.16); box-shadow:0 44px 64px -14px rgb(0 0 0 / .85); z-index:5; }
+    /* Kleiner Klick-Hinweis-Pfeil, gleicher Stil wie bei "4 Bereiche"/Footer --
+       Farbe an den hellen Papier-Hintergrund dieser Karten angepasst. */
+    .pwnotes__note-arrow{
+      position:absolute; right:14px; bottom:16px; font-size:15px; line-height:1;
+      color:var(--pw-paper-sub); opacity:.55; transition:transform .2s ease, opacity .2s ease;
+    }
+    .pwnotes__note:hover .pwnotes__note-arrow{ transform:translateX(3px); opacity:.9; }
     .pwnotes__tab{
       display:block; margin:0 -16px 14px;
       background:var(--color-brand); color:#fff;
@@ -898,13 +931,13 @@
     <p class="pwnotes__lead">Zwischen Job, Familie und Handy bleibt dem Kopf kaum Zeit zum Runterkommen. Kein Wunder, dass abends noch alles weiterläuft.</p>
 
     <div class="pwnotes__wall">
-      <div class="pwnotes__note"><span class="pwnotes__tab">GERADE AKTIV IN DEINEM KOPF</span><h3>Der Grübler</h3><p>dreht die gleiche Sorge zum zehnten Mal</p></div>
-      <div class="pwnotes__note"><span class="pwnotes__tab">GERADE AKTIV IN DEINEM KOPF</span><h3>Der Planer</h3><p>sortiert morgen schon, obwohl heute noch läuft</p></div>
-      <div class="pwnotes__note"><span class="pwnotes__tab">GERADE AKTIV IN DEINEM KOPF</span><h3>Der Kritiker</h3><p>hätte das heute doch anders sagen sollen</p></div>
-      <div class="pwnotes__note"><span class="pwnotes__tab">GERADE AKTIV IN DEINEM KOPF</span><h3>Der Perfektionist</h3><p>die eine Kleinigkeit lässt einfach nicht los</p></div>
-      <div class="pwnotes__note"><span class="pwnotes__tab">GERADE AKTIV IN DEINEM KOPF</span><h3>Der Multitasker</h3><p>drei Tabs offen, keiner davon fertig</p></div>
-      <div class="pwnotes__note"><span class="pwnotes__tab">GERADE AKTIV IN DEINEM KOPF</span><h3>Der Kontrolleur</h3><p>nochmal checken, ob wirklich alles erledigt ist</p></div>
-      <div class="pwnotes__note"><span class="pwnotes__tab">GERADE AKTIV IN DEINEM KOPF</span><h3>Der Terminjongleur</h3><p>morgen, übermorgen, und dann noch das hier</p></div>
+      <div class="pwnotes__note"><span class="pwnotes__tab">GERADE AKTIV IN DEINEM KOPF</span><h3>Der Grübler</h3><p>dreht die gleiche Sorge zum zehnten Mal</p><span class="pwnotes__note-arrow" aria-hidden="true">&#8594;</span></div>
+      <div class="pwnotes__note"><span class="pwnotes__tab">GERADE AKTIV IN DEINEM KOPF</span><h3>Der Planer</h3><p>sortiert morgen schon, obwohl heute noch läuft</p><span class="pwnotes__note-arrow" aria-hidden="true">&#8594;</span></div>
+      <div class="pwnotes__note"><span class="pwnotes__tab">GERADE AKTIV IN DEINEM KOPF</span><h3>Der Kritiker</h3><p>hätte das heute doch anders sagen sollen</p><span class="pwnotes__note-arrow" aria-hidden="true">&#8594;</span></div>
+      <div class="pwnotes__note"><span class="pwnotes__tab">GERADE AKTIV IN DEINEM KOPF</span><h3>Der Perfektionist</h3><p>die eine Kleinigkeit lässt einfach nicht los</p><span class="pwnotes__note-arrow" aria-hidden="true">&#8594;</span></div>
+      <div class="pwnotes__note"><span class="pwnotes__tab">GERADE AKTIV IN DEINEM KOPF</span><h3>Der Multitasker</h3><p>drei Tabs offen, keiner davon fertig</p><span class="pwnotes__note-arrow" aria-hidden="true">&#8594;</span></div>
+      <div class="pwnotes__note"><span class="pwnotes__tab">GERADE AKTIV IN DEINEM KOPF</span><h3>Der Kontrolleur</h3><p>nochmal checken, ob wirklich alles erledigt ist</p><span class="pwnotes__note-arrow" aria-hidden="true">&#8594;</span></div>
+      <div class="pwnotes__note"><span class="pwnotes__tab">GERADE AKTIV IN DEINEM KOPF</span><h3>Der Terminjongleur</h3><p>morgen, übermorgen, und dann noch das hier</p><span class="pwnotes__note-arrow" aria-hidden="true">&#8594;</span></div>
     </div>
 
     <p class="pwnotes__closer"><strong>Sieben Stimmen gleichzeitig, und keine davon macht wirklich Pause.</strong><br>Genau da setzt der richtige Sound an, leiser werden, ohne dass du etwas dafür tun musst.</p>
