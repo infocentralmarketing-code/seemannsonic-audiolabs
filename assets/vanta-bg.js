@@ -183,7 +183,12 @@
 
     var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var tooNarrow = window.innerWidth < CFG.minWidth;
-    if (reduced || tooNarrow || lowPowerDevice() || !hasWebGL()) return;
+    // Touchscreens without real hover (tablets included) skip the animated background too:
+    // it's a purely decorative desktop enhancement, and lowPowerDevice() can't reliably
+    // detect a large tablet (e.g. navigator.deviceMemory doesn't exist in Safari/iPadOS),
+    // so a WebGL animation loop could otherwise keep running unnoticed on a tablet.
+    var noHover = window.matchMedia('(hover: none)').matches;
+    if (reduced || tooNarrow || noHover || lowPowerDevice() || !hasWebGL()) return;
 
     if (!CFG.lazy || !('IntersectionObserver' in window)) {
       els.forEach(function (el) { start(el); });

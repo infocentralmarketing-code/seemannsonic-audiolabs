@@ -86,6 +86,16 @@
     }
     .offer-nav__wordmark span{ color:var(--color-brand-bright); }
     .offer-nav__wordmark-sub{ font-size:9px; font-weight:700; letter-spacing:.16em; color:var(--color-brand-bright); margin-top:1px; }
+    /* Kleiner Klick-Hinweis-Pfeil, gleicher Stil wie bei "4 Bereiche" -- zeigt,
+       dass das Logo anklickbar ist (Handy/Tablet: immer leicht sichtbar; Desktop:
+       wandert beim Hover etwas nach rechts). */
+    .offer-nav__brand-arrow{
+      margin-left:6px; font-size:14px; line-height:1; color:var(--color-fg-3);
+      opacity:.6; transition:transform .2s ease, opacity .2s ease; display:inline-block;
+    }
+    @media (hover:hover) and (pointer:fine){
+      .offer-nav__brand:hover .offer-nav__brand-arrow{ transform:translateX(3px); opacity:1; }
+    }
     .ss-mark{ display:inline-flex; align-items:center; gap:9px; }
     .ss-mark__badge text{ font-family:Arial, sans-serif; }
 
@@ -187,6 +197,7 @@
         <span class="offer-nav__wordmark notranslate" translate="no"><em>Seemann</em><span>S</span><em>onic</em></span>
         <span class="offer-nav__wordmark-sub">AUDIOLABS</span>
       </span>
+      <span class="offer-nav__brand-arrow" aria-hidden="true">&#8594;</span>
     </a>
 
     <nav class="offer-nav__links--desktop" aria-label="Primary">
@@ -290,7 +301,7 @@
     }
 
     /* ---- Kopfzeile: Wort-Hover mit Nutzen-Reveal ---- */
-    .edhero__word{ position:relative; display:inline-block; white-space:nowrap; cursor:default; }
+    .edhero__word{ position:relative; display:inline-block; white-space:nowrap; cursor:default; -webkit-tap-highlight-color:transparent; }
     span.edhero__word{
       background:transparent;
       padding:2px 5px; margin:-2px -5px;
@@ -378,6 +389,7 @@
         font-size:clamp(17px,4.8vw,21px); line-height:1.4; letter-spacing:-.005em;
         color:var(--color-accent-bright); max-width:100%; white-space:normal;
         cursor:pointer; opacity:0; pointer-events:none; transition:opacity .2s ease;
+        -webkit-tap-highlight-color:transparent;
       }
       .edhero__mobile-reveal.is-visible{ opacity:1; pointer-events:auto; }
     }
@@ -439,6 +451,8 @@
     }
     .edhero__photo img{ width:88%; height:88%; object-fit:contain; display:block; margin:auto; filter:drop-shadow(0 30px 60px rgb(0 0 0 / .6)); }
     #ssIntroVideoBox{ position:absolute; left:62%; top:50%; transform:translate(-50%,-50%); width:min(145%, 94vw); max-width:720px; }
+    #ssIntroBack10, #ssIntroFwd10, #ssIntroStop{ width:30px; height:30px; }
+    #ssIntroPlayPause{ width:32px; height:32px; }
     .edhero__sonar{ animation:edhero-sonar 4.5s ease-out infinite; transform-origin:center; }
     .edhero__sonar:nth-child(2){ animation-delay:1.1s; }
     .edhero__sonar:nth-child(3){ animation-delay:2.2s; }
@@ -451,8 +465,8 @@
     }
     .edhero__card:hover{ transform:translateY(-4px) scale(1.04); }
     .edhero__card-arrow{
-      margin-left:auto; padding-left:8px; font-size:16px; line-height:1; flex-shrink:0;
-      color:var(--color-fg-3); opacity:.65; transition:transform .2s ease, opacity .2s ease;
+      margin-left:auto; padding-left:8px; font-size:22px; line-height:1; flex-shrink:0;
+      color:var(--color-fg-3); opacity:.75; transition:transform .2s ease, opacity .2s ease;
     }
     .edhero__card:hover .edhero__card-arrow{ transform:translateX(3px); opacity:1; }
     @keyframes edhero-arrow-nudge{ 0%,100%{ transform:translateX(0); opacity:.6; } 50%{ transform:translateX(5px); opacity:1; } }
@@ -473,6 +487,32 @@
     @keyframes edhero-up{ from{ opacity:0; transform:translateY(18px);} to{ opacity:1; transform:translateY(0);} }
     @keyframes edhero-float-up{ from{ transform:translateY(0);} to{ transform:translateY(-50px);} }
     @keyframes edhero-float-down{ from{ transform:translateY(0);} to{ transform:translateY(50px);} }
+
+    /* Tablet-Bereich (zwischen der Handy-Grenze und echtem Desktop): eigene,
+       kleinere Video-Box-Breite/-Position, damit die untere Steuerleiste (inkl.
+       Stopp-Button rechts) immer komplett im Bild bleibt -- die 145%-Breite ist
+       fuer breite Desktop-Fenster gedacht und ragt auf Tablet-Breiten ueber den
+       rechten Rand hinaus. Steuerungstasten hier zusaetzlich etwas groesser
+       (leichter zu treffen), und der Logo-Glow etwas kraeftiger. Echter Desktop
+       (>1300px) bleibt unveraendert bei 145%. */
+    @media (min-width:1001px) and (max-width:1300px){
+      /* Box exakt auf die Groesse/Position des Logo-Containers begrenzen (statt
+         darueber hinaus zu "bluten" wie auf echtem Desktop) -- so bleibt sie
+         garantiert innerhalb der Grid-Spalte und kann den Viewport-Rand nie
+         ueberschreiten, unabhaengig von der genauen Tablet-Breite. */
+      #ssIntroVideoBox{ left:50%; width:100%; max-width:100%; }
+      #ssIntroBack10, #ssIntroFwd10, #ssIntroStop{ width:38px; height:38px; }
+      #ssIntroPlayPause{ width:40px; height:40px; }
+      #ssIntroBack10 svg, #ssIntroFwd10 svg{ width:18px; height:18px; }
+      #ssIntroStop svg{ width:15px; height:15px; }
+      #ssIntroPlayPauseIcon{ width:16px; height:16px; }
+      .edhero__photo img{
+        filter:
+          drop-shadow(0 0 46px rgba(61,139,255,.55))
+          drop-shadow(0 0 90px rgba(0,183,255,.3))
+          drop-shadow(0 30px 60px rgb(0 0 0 / .6));
+      }
+    }
 
     @media (max-width:1000px){
       .edhero{ padding:70px 28px 80px; }
@@ -548,24 +588,24 @@
           </style>
 
           <div id="ssIntroControls" style="position:absolute; left:0; right:0; bottom:0; display:flex; align-items:center; gap:6px; padding:9px 10px; background:linear-gradient(to top, rgba(0,0,0,.85), rgba(0,0,0,0)); flex-wrap:nowrap;">
-            <button id="ssIntroBack10" type="button" aria-label="10 Sekunden zurück" style="flex:0 0 auto; width:30px; height:30px; border:0; border-radius:50%; background:rgba(255,255,255,.16); color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+            <button id="ssIntroBack10" type="button" aria-label="10 Sekunden zurück" style="flex:0 0 auto; border:0; border-radius:50%; background:rgba(255,255,255,.16); color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; -webkit-tap-highlight-color:transparent;">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 5 12l6 7"></path><path d="M18 5v14"></path></svg>
             </button>
-            <button id="ssIntroPlayPause" type="button" aria-label="Abspielen / Pause" style="flex:0 0 auto; width:32px; height:32px; border:0; border-radius:50%; background:rgba(255,255,255,.16); color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+            <button id="ssIntroPlayPause" type="button" aria-label="Abspielen / Pause" style="flex:0 0 auto; border:0; border-radius:50%; background:rgba(255,255,255,.16); color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; -webkit-tap-highlight-color:transparent;">
               <svg id="ssIntroPlayPauseIcon" width="14" height="14" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg>
             </button>
-            <button id="ssIntroFwd10" type="button" aria-label="10 Sekunden vor" style="flex:0 0 auto; width:30px; height:30px; border:0; border-radius:50%; background:rgba(255,255,255,.16); color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+            <button id="ssIntroFwd10" type="button" aria-label="10 Sekunden vor" style="flex:0 0 auto; border:0; border-radius:50%; background:rgba(255,255,255,.16); color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; -webkit-tap-highlight-color:transparent;">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 5l6 7-6 7"></path><path d="M6 5v14"></path></svg>
             </button>
             <input id="ssIntroSeek" type="range" min="0" max="100" value="0" step="0.1" style="flex:1 1 auto; accent-color:#3D8BFF; cursor:pointer;">
             <span id="ssIntroTime" style="flex:0 0 auto; color:#fff; font-size:10.5px; min-width:62px; text-align:right; font-family:var(--font-sans, sans-serif);">0:00 / 0:00</span>
-            <button id="ssIntroStop" type="button" aria-label="Stopp, zurück zum Logo" title="Stopp" style="flex:0 0 auto; width:30px; height:30px; display:flex; align-items:center; justify-content:center; border:0; border-radius:50%; background:#E1483C; color:#fff; cursor:pointer;">
+            <button id="ssIntroStop" type="button" aria-label="Stopp, zurück zum Logo" title="Stopp" style="flex:0 0 auto; display:flex; align-items:center; justify-content:center; border:0; border-radius:50%; background:#E1483C; color:#fff; cursor:pointer; -webkit-tap-highlight-color:transparent;">
               <svg width="12" height="12" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" fill="currentColor"></rect></svg>
             </button>
           </div>
         </div>
 
-        <button id="ssIntroPlayIcon" type="button" aria-label="Video abspielen" style="position:absolute; inset:0; width:100%; height:100%; padding:0; margin:0; border:0; background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+        <button id="ssIntroPlayIcon" type="button" aria-label="Video abspielen" style="position:absolute; inset:0; width:100%; height:100%; padding:0; margin:0; border:0; background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; -webkit-tap-highlight-color:transparent; outline:none;">
           <svg width="22%" height="22%" viewBox="0 0 24 24" style="filter:drop-shadow(0 2px 8px rgba(0,0,0,.6));">
             <circle cx="12" cy="12" r="11" fill="rgba(8,17,31,0.55)"></circle>
             <path d="M9.5 7.5v9l8-4.5z" fill="#ffffff"></path>
@@ -3208,6 +3248,15 @@
       letter-spacing:.16em; color:var(--color-brand-bright); text-align:center;
       margin-top:.15em;
     }
+    /* Kleiner Klick-Hinweis-Pfeil neben "Audiolabs" -- zeigt nach oben, weil der
+       Link zurueck zum Seitenanfang fuehrt. Gleicher Stil wie bei "4 Bereiche". */
+    .offer-footer__wordmark-arrow{
+      display:inline-block; margin-left:8px; font-size:.55em; vertical-align:.12em;
+      color:var(--color-fg-3); opacity:.6; transition:transform .2s ease, opacity .2s ease;
+    }
+    @media (hover:hover) and (pointer:fine){
+      .offer-footer__wordmark--text:hover .offer-footer__wordmark-arrow{ transform:translateY(-3px); opacity:1; }
+    }
     .offer-footer__wordmark img{
       width:100%;
       height:auto;
@@ -3299,7 +3348,7 @@
   <!-- Oversized wordmark -->
   <a class="offer-footer__wordmark offer-footer__wordmark--text" href="#top" aria-label="Nach oben, zur Startseite">
     <em>Seemann</em><span>S</span><em>onic</em>
-    <span class="offer-footer__wordmark--sub">Audiolabs</span>
+    <span class="offer-footer__wordmark--sub">Audiolabs<span class="offer-footer__wordmark-arrow" aria-hidden="true">&#8593;</span></span>
   </a>
 </footer>
 
